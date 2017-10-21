@@ -111,7 +111,7 @@ public class AdminServlet extends HttpServlet {
         }
 
         // use RequestDispatcher to forward request internally
-        userPath = "/admin/index.jsp";
+        userPath = "/admin/adminIndex.jsp";
         try {
             request.getRequestDispatcher(userPath).forward(request, response);
         } catch (Exception ex) {

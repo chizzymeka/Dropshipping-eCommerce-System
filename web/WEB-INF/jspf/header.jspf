@@ -9,6 +9,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="css/peripherals.css">
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <script src="js/jquery-3.2.1.js" type="text/javascript"></script>
         <title>Peripherals</title>
     </head>
     <body>
@@ -16,7 +17,7 @@
             <div id="header">
                 <div id="widgetBar">
                     <div class="headerWidget">
-                        [ language toggle ]
+                        [ My Account ]
                     </div>
                                    <%-- checkout widget --%>
                     <div class="headerWidget">

@@ -34,8 +34,8 @@
         <jsp-property-group>
             <description>header and footer settings | JSP configuration for the admin console</description>
             <url-pattern>/admin/index.jsp</url-pattern>
-            <url-pattern>/admin/login.jsp</url-pattern>
-            <url-pattern>/admin/error.jsp</url-pattern>
+            <url-pattern>/admin/adminLogin.jsp</url-pattern>
+            <url-pattern>/admin/adminError.jsp</url-pattern>
             <include-prelude>/admin/jspf/header.jspf</include-prelude>
             <include-coda>/admin/jspf/footer.jspf</include-coda>
         </jsp-property-group>
@@ -63,8 +63,8 @@
         <auth-method>FORM</auth-method>
         <realm-name>file</realm-name>
         <form-login-config>
-            <form-login-page>/admin/login.jsp</form-login-page>
-            <form-error-page>/admin/error.jsp</form-error-page>
+            <form-login-page>/admin/adminLogin.jsp</form-login-page>
+            <form-error-page>/admin/adminError.jsp</form-error-page>
         </form-login-config>
     </login-config>
     <security-role>

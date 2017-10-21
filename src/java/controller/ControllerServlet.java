@@ -9,7 +9,6 @@ import cart.ShoppingCart;
 import entity.Category;
 import entity.Product;
 import java.io.IOException;
-import static java.lang.System.out;
 import java.util.Collection;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -23,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import session.CategoryFacade;
 import session.OrderManager;
 import session.ProductFacade;
+import validate.Validator;
 
 /**
  *
@@ -143,6 +143,7 @@ public class ControllerServlet extends HttpServlet {
         String userPath = request.getServletPath();
         HttpSession session = request.getSession();
         ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
+        Validator validator = new Validator();
 
         // if addToCart action is called
         switch (userPath) {
@@ -163,7 +164,6 @@ public class ControllerServlet extends HttpServlet {
                 userPath = "/category";
                 break;
             }
-
             case "/updateCart": {
                 // get input from request
                 String productId = request.getParameter("productId");
@@ -173,7 +173,6 @@ public class ControllerServlet extends HttpServlet {
                 userPath = "/cart";
                 break;
             }
-
             // if purchase action is called
             case "/purchase":
                 if (cart != null) {
@@ -190,40 +189,52 @@ public class ControllerServlet extends HttpServlet {
                     String phone = request.getParameter("phone");
                     String email = request.getParameter("email");
                     String creditCard = request.getParameter("creditCard");
-                    
-                    out.print(title);
-                    out.print(firstName);
-                    out.print(lastName);
-                    out.print(addressLine1);
-                    out.print(addressLine2);
-                    out.print(city);
-                    out.print(state);
-                    out.print(postCode);
-                    out.print(country);
-                    out.print(phone);
-                    out.print(email);
-                    out.print(creditCard);
 
-                    int orderId = orderManager.placeOrder(title, firstName, lastName, addressLine1, addressLine2, city, state, postCode, country, phone, email, creditCard, cart);
-                    
-                    if (orderId !=0){
-                        // get order details
-                        Map orderMap = orderManager.getOrderDetails(orderId);
+//                    Test Outputs
+//                    out.print(title);
+//                    out.print(firstName);
+//                    out.print(lastName);
+//                    out.print(addressLine1);
+//                    out.print(addressLine2);
+//                    out.print(city);
+//                    out.print(state);
+//                    out.print(postCode);
+//                    out.print(country);
+//                    out.print(phone);
+//                    out.print(email);
+//                    out.print(creditCard);
 
-                        // place order details in request scope
-                        request.setAttribute("customer", orderMap.get("customer"));
-                        request.setAttribute("products", orderMap.get("products"));
-                        request.setAttribute("orderRecord", orderMap.get("orderRecord"));
-                        request.setAttribute("orderedProducts", orderMap.get("orderedProducts"));
-                        
-                        userPath = "/confirmation";
-                    }else{
+                    // Validate User Data
+                    boolean validationErrorFlag = false;
+                    validationErrorFlag = validator.validateForm(title, firstName, lastName, addressLine1, addressLine2, city, state, postCode, country, phone, email, creditCard, request);
+
+                    // if validation error found, return user to checkout
+                    if (validationErrorFlag == true) {
+                        request.setAttribute("validationErrorFlag", validationErrorFlag);
                         userPath = "/checkout";
-                        request.setAttribute("orderFailureFlag", true);
+                        // otherwise, save order to database
+                    } else {
+
+                        int orderId = orderManager.placeOrder(title, firstName, lastName, addressLine1, addressLine2, city, state, postCode, country, phone, email, creditCard, cart);
+
+                        if (orderId != 0) {
+                            // get order details
+                            Map orderMap = orderManager.getOrderDetails(orderId);
+
+                            // place order details in request scope
+                            request.setAttribute("customer", orderMap.get("customer"));
+                            request.setAttribute("products", orderMap.get("products"));
+                            request.setAttribute("orderRecord", orderMap.get("orderRecord"));
+                            request.setAttribute("orderedProducts", orderMap.get("orderedProducts"));
+
+                            userPath = "/confirmation";
+                        } else {
+                            userPath = "/checkout";
+                            request.setAttribute("orderFailureFlag", true);
+                        }
                     }
                     break;
                 }
-
             default:
                 break;
         }

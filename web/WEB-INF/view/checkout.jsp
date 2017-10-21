@@ -4,7 +4,51 @@
     Author     : Chizzy Meka | 16036630 | MSc. Computing
 --%>
 
-<%-- Ensure that user is logged when navgigating to this page --%>
+<script src="js/jquery.validate.js" type="text/javascript"></script>
+
+// Client-side Validation
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#checkoutForm").validate({
+            rules: {
+                title: "required",
+                firstName: "required",
+                lastName: "required",
+                phone: {
+                    required: true,
+                    number: true,
+                    minlength: 9
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                addressLine1: {
+                    required: true
+                },
+                addressLine2: {
+                    required: true
+                },
+                city: {
+                    required: true
+                },
+                state: {
+                    required: true
+                },
+                postCode: {
+                    required: true
+                },
+                country: {
+                    required: true
+                },
+                creditcard: {
+                    required: true,
+                    creditcard: true
+                }
+            }
+        });
+    });
+</script>
 
 <div id="singleColumn">
 
@@ -14,6 +58,50 @@
 
     <form action="purchase" method="post">
         <table id="checkoutTable">
+            <c:if test="${!empty validationErrorFlag}">
+                <tr>
+                    <td colspan="2" style="text-align:left">
+                        <span class="error smallText">Please provide valid entries for the following field(s):
+                            <c:if test="${!empty titleError}">
+                                <br><span class="indent"><strong>Title</strong> (e.g., Chizzy)</span>
+                            </c:if>
+                            <c:if test="${!empty firstNameError}">
+                                <br><span class="indent"><strong>First Name</strong> (e.g., Chizzy)</span>
+                            </c:if>
+                            <c:if test="${!empty lastNameError}">
+                                <br><span class="indent"><strong>Last Name</strong> (e.g., Meka)</span>
+                            </c:if>
+                            <c:if test="${!empty phoneError}">
+                                <br><span class="indent"><strong>Phone</strong> (e.g., 07850441897)</span>
+                            </c:if>
+                            <c:if test="${!empty emailError}">
+                                <br><span class="indent"><strong>Email</strong> (e.g., chizzymeka@yahoo.co.uk)</span>
+                            </c:if>
+                            <c:if test="${!empty addressLine1Error}">
+                                <br><span class="indent"><strong>Address Line 1</strong> (e.g., #1 Numero Uno Road)</span>
+                            </c:if>
+                            <c:if test="${!empty addressLine2Error}">
+                                <br><span class="indent"><strong>Address Line 2</strong> (e.g., Browning)</span>
+                            </c:if>
+                            <c:if test="${!empty cityError}">
+                                <br><span class="indent"><strong>City</strong> (e.g., Southwark)</span>
+                            </c:if>
+                            <c:if test="${!empty stateError}">
+                                <br><span class="indent"><strong>State</strong> (e.g., London)</span>
+                            </c:if>
+                            <c:if test="${!empty countryError}">
+                                <br><span class="indent"><strong>State</strong> (e.g., United Kingdom)</span>
+                            </c:if>
+                            <c:if test="${!empty postCodeError}">
+                                <br><span class="indent"><strong>Post Code</strong> (e.g., SO15 2FT)</span>
+                            </c:if>
+                            <c:if test="${!empty creditCardError}">
+                                <br><span class="indent"><strong>Credit Card</strong> (e.g., 1111222233334444)</span>
+                            </c:if>
+                        </span>
+                    </td>
+                </tr>
+            </c:if>
             <tr>
                 <td><label for="title">Title:</label></td>
                 <td>
@@ -108,7 +196,7 @@
                     <input type="text"
                            size="31"
                            maxlength="45"
-                           id="email"
+                           id="state"
                            name="state"
                            value="${param.state}">
                 </td>
