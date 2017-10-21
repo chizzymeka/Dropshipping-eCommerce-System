@@ -1,0 +1,18 @@
+            <div id="footer">
+                <hr>
+                <p id="footerText" class="reallySmallText">
+                    Copyright
+                    &nbsp;&nbsp;&copy;&nbsp;&nbsp;
+                    <script type="text/javascript">
+                        document.write(new Date().getFullYear());
+                    </script>,
+                    Peripherals.
+                    &nbsp;&nbsp;
+                    <a href="#">Privacy Policy</a>
+                    &nbsp;&nbsp;::&nbsp;&nbsp;
+                    <a href="contact.jsp">Contact</a>
+                </p>
+            </div>
+        </div>
+    </body>
+</html>
