@@ -38,9 +38,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "CustomerOrder.findAll", query = "SELECT c FROM CustomerOrder c")
     , @NamedQuery(name = "CustomerOrder.findByCustomerOrderID", query = "SELECT c FROM CustomerOrder c WHERE c.customerOrderID = :customerOrderID")
-    , @NamedQuery(name = "CustomerOrder.findByAmount", query = "SELECT c FROM CustomerOrder c WHERE c.amount = :amount")
-    , @NamedQuery(name = "CustomerOrder.findByConfirmationNumber", query = "SELECT c FROM CustomerOrder c WHERE c.confirmationNumber = :confirmationNumber")
-    , @NamedQuery(name = "CustomerOrder.findByCreated", query = "SELECT c FROM CustomerOrder c WHERE c.created = :created")})
+    , @NamedQuery(name = "CustomerOrder.findByCustomerID", query = "SELECT c FROM CustomerOrder c WHERE c.customerID = :customerID") // manually created to work with findByCustomerID method in CustomerOrderFacade
+    , @NamedQuery(name = "CustomerOrder.findByCustomerOrderAmount", query = "SELECT c FROM CustomerOrder c WHERE c.customerOrderAmount = :customerOrderAmount")
+    , @NamedQuery(name = "CustomerOrder.findByCustomerOrderConfirmationNumber", query = "SELECT c FROM CustomerOrder c WHERE c.customerOrderConfirmationNumber = :customerOrderConfirmationNumber")
+    , @NamedQuery(name = "CustomerOrder.findByCustomerOrderCreated", query = "SELECT c FROM CustomerOrder c WHERE c.customerOrderCreated = :customerOrderCreated")})
 public class CustomerOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,17 +53,17 @@ public class CustomerOrder implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Column(name = "Amount")
-    private BigDecimal amount;
+    @Column(name = "CustomerOrderAmount")
+    private BigDecimal customerOrderAmount;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ConfirmationNumber")
-    private int confirmationNumber;
+    @Column(name = "CustomerOrderConfirmationNumber")
+    private int customerOrderConfirmationNumber;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "Created")
+    @Column(name = "CustomerOrderCreated")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
+    private Date customerOrderCreated;
     @JoinColumn(name = "CustomerID", referencedColumnName = "CustomerID")
     @ManyToOne(optional = false)
     private Customer customerID;
@@ -79,11 +80,11 @@ public class CustomerOrder implements Serializable {
         this.customerOrderID = customerOrderID;
     }
 
-    public CustomerOrder(Integer customerOrderID, BigDecimal amount, int confirmationNumber, Date created) {
+    public CustomerOrder(Integer customerOrderID, BigDecimal customerOrderAmount, int customerOrderConfirmationNumber, Date customerOrderCreated) {
         this.customerOrderID = customerOrderID;
-        this.amount = amount;
-        this.confirmationNumber = confirmationNumber;
-        this.created = created;
+        this.customerOrderAmount = customerOrderAmount;
+        this.customerOrderConfirmationNumber = customerOrderConfirmationNumber;
+        this.customerOrderCreated = customerOrderCreated;
     }
 
     public Integer getCustomerOrderID() {
@@ -94,28 +95,28 @@ public class CustomerOrder implements Serializable {
         this.customerOrderID = customerOrderID;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public BigDecimal getCustomerOrderAmount() {
+        return customerOrderAmount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setCustomerOrderAmount(BigDecimal customerOrderAmount) {
+        this.customerOrderAmount = customerOrderAmount;
     }
 
-    public int getConfirmationNumber() {
-        return confirmationNumber;
+    public int getCustomerOrderConfirmationNumber() {
+        return customerOrderConfirmationNumber;
     }
 
-    public void setConfirmationNumber(int confirmationNumber) {
-        this.confirmationNumber = confirmationNumber;
+    public void setCustomerOrderConfirmationNumber(int customerOrderConfirmationNumber) {
+        this.customerOrderConfirmationNumber = customerOrderConfirmationNumber;
     }
 
-    public Date getCreated() {
-        return created;
+    public Date getCustomerOrderCreated() {
+        return customerOrderCreated;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setCustomerOrderCreated(Date customerOrderCreated) {
+        this.customerOrderCreated = customerOrderCreated;
     }
 
     public Customer getCustomerID() {

@@ -42,7 +42,7 @@ public class CustomerOrderFacade extends AbstractFacade<CustomerOrder> {
     // In this implementation, there is only one order per customer
     // The data model however allows for multple orders per customer
     @RolesAllowed("PeripheralsAdmin")
-    public CustomerOrder findByCustomer(Object customer){
+    public CustomerOrder findByCustomerID(Object customer){
         return (CustomerOrder) em.createNamedQuery("CustomerOrder.findByCustomer").setParameter("customer", customer).getSingleResult();
     }
 }

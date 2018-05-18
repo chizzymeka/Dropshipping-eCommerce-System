@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OrderedProduct.findAll", query = "SELECT o FROM OrderedProduct o")
     , @NamedQuery(name = "OrderedProduct.findByCustomerOrderID", query = "SELECT o FROM OrderedProduct o WHERE o.orderedProductPK.customerOrderID = :customerOrderID")
     , @NamedQuery(name = "OrderedProduct.findByProductID", query = "SELECT o FROM OrderedProduct o WHERE o.orderedProductPK.productID = :productID")
-    , @NamedQuery(name = "OrderedProduct.findByQuantity", query = "SELECT o FROM OrderedProduct o WHERE o.quantity = :quantity")})
+    , @NamedQuery(name = "OrderedProduct.findByOrderedProductQuantity", query = "SELECT o FROM OrderedProduct o WHERE o.orderedProductQuantity = :orderedProductQuantity")})
 public class OrderedProduct implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,8 +37,8 @@ public class OrderedProduct implements Serializable {
     protected OrderedProductPK orderedProductPK;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "Quantity")
-    private short quantity;
+    @Column(name = "OrderedProductQuantity")
+    private short orderedProductQuantity;
     @JoinColumn(name = "CustomerOrderID", referencedColumnName = "CustomerOrderID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private CustomerOrder customerOrder;
@@ -53,9 +53,9 @@ public class OrderedProduct implements Serializable {
         this.orderedProductPK = orderedProductPK;
     }
 
-    public OrderedProduct(OrderedProductPK orderedProductPK, short quantity) {
+    public OrderedProduct(OrderedProductPK orderedProductPK, short orderedProductQuantity) {
         this.orderedProductPK = orderedProductPK;
-        this.quantity = quantity;
+        this.orderedProductQuantity = orderedProductQuantity;
     }
 
     public OrderedProduct(int customerOrderID, int productID) {
@@ -70,12 +70,12 @@ public class OrderedProduct implements Serializable {
         this.orderedProductPK = orderedProductPK;
     }
 
-    public short getQuantity() {
-        return quantity;
+    public short getOrderedProductQuantity() {
+        return orderedProductQuantity;
     }
 
-    public void setQuantity(short quantity) {
-        this.quantity = quantity;
+    public void setOrderedProductQuantity(short orderedProductQuantity) {
+        this.orderedProductQuantity = orderedProductQuantity;
     }
 
     public CustomerOrder getCustomerOrder() {

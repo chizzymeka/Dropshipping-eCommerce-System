@@ -33,20 +33,19 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Supplier.findAll", query = "SELECT s FROM Supplier s")
     , @NamedQuery(name = "Supplier.findBySupplierID", query = "SELECT s FROM Supplier s WHERE s.supplierID = :supplierID")
-    , @NamedQuery(name = "Supplier.findByCompanyName", query = "SELECT s FROM Supplier s WHERE s.companyName = :companyName")
-    , @NamedQuery(name = "Supplier.findByContactFirstName", query = "SELECT s FROM Supplier s WHERE s.contactFirstName = :contactFirstName")
-    , @NamedQuery(name = "Supplier.findByContactLastName", query = "SELECT s FROM Supplier s WHERE s.contactLastName = :contactLastName")
-    , @NamedQuery(name = "Supplier.findByContactTitle", query = "SELECT s FROM Supplier s WHERE s.contactTitle = :contactTitle")
-    , @NamedQuery(name = "Supplier.findByAddressLine1", query = "SELECT s FROM Supplier s WHERE s.addressLine1 = :addressLine1")
-    , @NamedQuery(name = "Supplier.findByAddressLine2", query = "SELECT s FROM Supplier s WHERE s.addressLine2 = :addressLine2")
-    , @NamedQuery(name = "Supplier.findByCity", query = "SELECT s FROM Supplier s WHERE s.city = :city")
-    , @NamedQuery(name = "Supplier.findByState", query = "SELECT s FROM Supplier s WHERE s.state = :state")
-    , @NamedQuery(name = "Supplier.findByPostCode", query = "SELECT s FROM Supplier s WHERE s.postCode = :postCode")
-    , @NamedQuery(name = "Supplier.findByCountry", query = "SELECT s FROM Supplier s WHERE s.country = :country")
-    , @NamedQuery(name = "Supplier.findByPhone", query = "SELECT s FROM Supplier s WHERE s.phone = :phone")
-    , @NamedQuery(name = "Supplier.findByEmail", query = "SELECT s FROM Supplier s WHERE s.email = :email")
-    , @NamedQuery(name = "Supplier.findByWebsite", query = "SELECT s FROM Supplier s WHERE s.website = :website")
-    , @NamedQuery(name = "Supplier.findByStockLevel", query = "SELECT s FROM Supplier s WHERE s.stockLevel = :stockLevel")})
+    , @NamedQuery(name = "Supplier.findBySupplierCompanyName", query = "SELECT s FROM Supplier s WHERE s.supplierCompanyName = :supplierCompanyName")
+    , @NamedQuery(name = "Supplier.findBySupplierContactFirstName", query = "SELECT s FROM Supplier s WHERE s.supplierContactFirstName = :supplierContactFirstName")
+    , @NamedQuery(name = "Supplier.findBySupplierContactLastName", query = "SELECT s FROM Supplier s WHERE s.supplierContactLastName = :supplierContactLastName")
+    , @NamedQuery(name = "Supplier.findBySupplierContactTitle", query = "SELECT s FROM Supplier s WHERE s.supplierContactTitle = :supplierContactTitle")
+    , @NamedQuery(name = "Supplier.findBySupplierAddressLine1", query = "SELECT s FROM Supplier s WHERE s.supplierAddressLine1 = :supplierAddressLine1")
+    , @NamedQuery(name = "Supplier.findBySupplierAddressLine2", query = "SELECT s FROM Supplier s WHERE s.supplierAddressLine2 = :supplierAddressLine2")
+    , @NamedQuery(name = "Supplier.findBySupplierCity", query = "SELECT s FROM Supplier s WHERE s.supplierCity = :supplierCity")
+    , @NamedQuery(name = "Supplier.findBySupplierState", query = "SELECT s FROM Supplier s WHERE s.supplierState = :supplierState")
+    , @NamedQuery(name = "Supplier.findBySupplierPostCode", query = "SELECT s FROM Supplier s WHERE s.supplierPostCode = :supplierPostCode")
+    , @NamedQuery(name = "Supplier.findBySupplierCountry", query = "SELECT s FROM Supplier s WHERE s.supplierCountry = :supplierCountry")
+    , @NamedQuery(name = "Supplier.findBySupplierPhone", query = "SELECT s FROM Supplier s WHERE s.supplierPhone = :supplierPhone")
+    , @NamedQuery(name = "Supplier.findBySupplierEmail", query = "SELECT s FROM Supplier s WHERE s.supplierEmail = :supplierEmail")
+    , @NamedQuery(name = "Supplier.findBySupplierWebsite", query = "SELECT s FROM Supplier s WHERE s.supplierWebsite = :supplierWebsite")})
 public class Supplier implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,74 +57,68 @@ public class Supplier implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "CompanyName")
-    private String companyName;
+    @Column(name = "SupplierCompanyName")
+    private String supplierCompanyName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "ContactFirstName")
-    private String contactFirstName;
+    @Column(name = "SupplierContactFirstName")
+    private String supplierContactFirstName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "ContactLastName")
-    private String contactLastName;
+    @Column(name = "SupplierContactLastName")
+    private String supplierContactLastName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
-    @Column(name = "ContactTitle")
-    private String contactTitle;
+    @Column(name = "SupplierContactTitle")
+    private String supplierContactTitle;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 60)
-    @Column(name = "AddressLine1")
-    private String addressLine1;
+    @Column(name = "SupplierAddressLine1")
+    private String supplierAddressLine1;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "AddressLine2")
-    private String addressLine2;
+    @Column(name = "SupplierAddressLine2")
+    private String supplierAddressLine2;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "City")
-    private String city;
+    @Column(name = "SupplierCity")
+    private String supplierCity;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(name = "State")
-    private String state;
+    @Column(name = "SupplierState")
+    private String supplierState;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
-    @Column(name = "PostCode")
-    private String postCode;
+    @Column(name = "SupplierPostCode")
+    private String supplierPostCode;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "Country")
-    private String country;
-    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
+    @Column(name = "SupplierCountry")
+    private String supplierCountry;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(name = "Phone")
-    private String phone;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Column(name = "SupplierPhone")
+    private String supplierPhone;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 75)
-    @Column(name = "Email")
-    private String email;
+    @Column(name = "SupplierEmail")
+    private String supplierEmail;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name = "Website")
-    private String website;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "StockLevel")
-    private int stockLevel;
+    @Column(name = "SupplierWebsite")
+    private String supplierWebsite;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "supplierID")
     private Collection<Product> productCollection;
 
@@ -136,22 +129,21 @@ public class Supplier implements Serializable {
         this.supplierID = supplierID;
     }
 
-    public Supplier(Integer supplierID, String companyName, String contactFirstName, String contactLastName, String contactTitle, String addressLine1, String addressLine2, String city, String state, String postCode, String country, String phone, String email, String website, int stockLevel) {
+    public Supplier(Integer supplierID, String supplierCompanyName, String supplierContactFirstName, String supplierContactLastName, String supplierContactTitle, String supplierAddressLine1, String supplierAddressLine2, String supplierCity, String supplierState, String supplierPostCode, String supplierCountry, String supplierPhone, String supplierEmail, String supplierWebsite) {
         this.supplierID = supplierID;
-        this.companyName = companyName;
-        this.contactFirstName = contactFirstName;
-        this.contactLastName = contactLastName;
-        this.contactTitle = contactTitle;
-        this.addressLine1 = addressLine1;
-        this.addressLine2 = addressLine2;
-        this.city = city;
-        this.state = state;
-        this.postCode = postCode;
-        this.country = country;
-        this.phone = phone;
-        this.email = email;
-        this.website = website;
-        this.stockLevel = stockLevel;
+        this.supplierCompanyName = supplierCompanyName;
+        this.supplierContactFirstName = supplierContactFirstName;
+        this.supplierContactLastName = supplierContactLastName;
+        this.supplierContactTitle = supplierContactTitle;
+        this.supplierAddressLine1 = supplierAddressLine1;
+        this.supplierAddressLine2 = supplierAddressLine2;
+        this.supplierCity = supplierCity;
+        this.supplierState = supplierState;
+        this.supplierPostCode = supplierPostCode;
+        this.supplierCountry = supplierCountry;
+        this.supplierPhone = supplierPhone;
+        this.supplierEmail = supplierEmail;
+        this.supplierWebsite = supplierWebsite;
     }
 
     public Integer getSupplierID() {
@@ -162,116 +154,108 @@ public class Supplier implements Serializable {
         this.supplierID = supplierID;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getSupplierCompanyName() {
+        return supplierCompanyName;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setSupplierCompanyName(String supplierCompanyName) {
+        this.supplierCompanyName = supplierCompanyName;
     }
 
-    public String getContactFirstName() {
-        return contactFirstName;
+    public String getSupplierContactFirstName() {
+        return supplierContactFirstName;
     }
 
-    public void setContactFirstName(String contactFirstName) {
-        this.contactFirstName = contactFirstName;
+    public void setSupplierContactFirstName(String supplierContactFirstName) {
+        this.supplierContactFirstName = supplierContactFirstName;
     }
 
-    public String getContactLastName() {
-        return contactLastName;
+    public String getSupplierContactLastName() {
+        return supplierContactLastName;
     }
 
-    public void setContactLastName(String contactLastName) {
-        this.contactLastName = contactLastName;
+    public void setSupplierContactLastName(String supplierContactLastName) {
+        this.supplierContactLastName = supplierContactLastName;
     }
 
-    public String getContactTitle() {
-        return contactTitle;
+    public String getSupplierContactTitle() {
+        return supplierContactTitle;
     }
 
-    public void setContactTitle(String contactTitle) {
-        this.contactTitle = contactTitle;
+    public void setSupplierContactTitle(String supplierContactTitle) {
+        this.supplierContactTitle = supplierContactTitle;
     }
 
-    public String getAddressLine1() {
-        return addressLine1;
+    public String getSupplierAddressLine1() {
+        return supplierAddressLine1;
     }
 
-    public void setAddressLine1(String addressLine1) {
-        this.addressLine1 = addressLine1;
+    public void setSupplierAddressLine1(String supplierAddressLine1) {
+        this.supplierAddressLine1 = supplierAddressLine1;
     }
 
-    public String getAddressLine2() {
-        return addressLine2;
+    public String getSupplierAddressLine2() {
+        return supplierAddressLine2;
     }
 
-    public void setAddressLine2(String addressLine2) {
-        this.addressLine2 = addressLine2;
+    public void setSupplierAddressLine2(String supplierAddressLine2) {
+        this.supplierAddressLine2 = supplierAddressLine2;
     }
 
-    public String getCity() {
-        return city;
+    public String getSupplierCity() {
+        return supplierCity;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setSupplierCity(String supplierCity) {
+        this.supplierCity = supplierCity;
     }
 
-    public String getState() {
-        return state;
+    public String getSupplierState() {
+        return supplierState;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setSupplierState(String supplierState) {
+        this.supplierState = supplierState;
     }
 
-    public String getPostCode() {
-        return postCode;
+    public String getSupplierPostCode() {
+        return supplierPostCode;
     }
 
-    public void setPostCode(String postCode) {
-        this.postCode = postCode;
+    public void setSupplierPostCode(String supplierPostCode) {
+        this.supplierPostCode = supplierPostCode;
     }
 
-    public String getCountry() {
-        return country;
+    public String getSupplierCountry() {
+        return supplierCountry;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setSupplierCountry(String supplierCountry) {
+        this.supplierCountry = supplierCountry;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getSupplierPhone() {
+        return supplierPhone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setSupplierPhone(String supplierPhone) {
+        this.supplierPhone = supplierPhone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getSupplierEmail() {
+        return supplierEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSupplierEmail(String supplierEmail) {
+        this.supplierEmail = supplierEmail;
     }
 
-    public String getWebsite() {
-        return website;
+    public String getSupplierWebsite() {
+        return supplierWebsite;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public int getStockLevel() {
-        return stockLevel;
-    }
-
-    public void setStockLevel(int stockLevel) {
-        this.stockLevel = stockLevel;
+    public void setSupplierWebsite(String supplierWebsite) {
+        this.supplierWebsite = supplierWebsite;
     }
 
     @XmlTransient

@@ -1,0 +1,23 @@
+<div id="footer">
+    <hr>
+    <p id="footerText" class="reallySmallText">
+        Copyright
+        &nbsp;&nbsp;&copy;&nbsp;&nbsp;
+        <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>,
+        Peripherals.
+        &nbsp;&nbsp;
+        <br>
+        <a href="contact.jsp">Contact</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="../../admin/adminLogin.jsp" target="_blank">Admin</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="../../shipper/shipperLogin.jsp" target="_blank">Shipper</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="../../supplier/supplierLogin.jsp" target="_blank">Supplier</a>
+    </p>
+</div>
+</div>
+</body>
+</html>

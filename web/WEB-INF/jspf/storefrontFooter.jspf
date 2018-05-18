@@ -1,0 +1,25 @@
+<div id="footer">
+    <hr>
+    <p id="footerText" class="reallySmallText">
+        Copyright
+        &nbsp;&nbsp;&copy;&nbsp;&nbsp;
+        <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>,
+        Peripherals.<br>
+        &nbsp;&nbsp;
+        <br>
+        <a href="about.jsp">About us</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="contact.jsp">Contact</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="<c:url value='admin'/>" target="_blank">Admin</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="<c:url value='shipper/viewReadyToBeShippedOrders'/>" target="_blank">Shipper</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="<c:url value='supplier/viewMyProducts'/>" target="_blank">Supplier</a>
+    </p>
+</div>
+</div>
+</body>
+</html>

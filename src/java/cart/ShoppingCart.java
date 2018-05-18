@@ -138,7 +138,7 @@ public class ShoppingCart {
         for (ShoppingCartItem scItem : items) {
 
             Product product = scItem.getProduct();
-            amount += (scItem.getQuantity() * product.getPrice().doubleValue());
+            amount += (scItem.getQuantity() * product.getProductPrice().doubleValue());
         }
 
         return amount;

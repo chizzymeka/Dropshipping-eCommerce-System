@@ -56,7 +56,7 @@
                     <span class="smallText">${product.productDescription}</span>
                 </td>
 
-                <td>&pound; ${product.price}</td>
+                <td>&pound; ${product.productPrice}</td>
 
                 <td>
                     <form action="<c:url value='addToCart'/>" method="post">

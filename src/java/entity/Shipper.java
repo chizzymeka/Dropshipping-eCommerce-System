@@ -32,19 +32,19 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Shipper.findAll", query = "SELECT s FROM Shipper s")
     , @NamedQuery(name = "Shipper.findByShipperID", query = "SELECT s FROM Shipper s WHERE s.shipperID = :shipperID")
-    , @NamedQuery(name = "Shipper.findByCompanyName", query = "SELECT s FROM Shipper s WHERE s.companyName = :companyName")
-    , @NamedQuery(name = "Shipper.findByContactFirstName", query = "SELECT s FROM Shipper s WHERE s.contactFirstName = :contactFirstName")
-    , @NamedQuery(name = "Shipper.findByContactLastName", query = "SELECT s FROM Shipper s WHERE s.contactLastName = :contactLastName")
-    , @NamedQuery(name = "Shipper.findByContactTitle", query = "SELECT s FROM Shipper s WHERE s.contactTitle = :contactTitle")
-    , @NamedQuery(name = "Shipper.findByAddressLine1", query = "SELECT s FROM Shipper s WHERE s.addressLine1 = :addressLine1")
-    , @NamedQuery(name = "Shipper.findByAddressLine2", query = "SELECT s FROM Shipper s WHERE s.addressLine2 = :addressLine2")
-    , @NamedQuery(name = "Shipper.findByCity", query = "SELECT s FROM Shipper s WHERE s.city = :city")
-    , @NamedQuery(name = "Shipper.findByState", query = "SELECT s FROM Shipper s WHERE s.state = :state")
-    , @NamedQuery(name = "Shipper.findByPostCode", query = "SELECT s FROM Shipper s WHERE s.postCode = :postCode")
-    , @NamedQuery(name = "Shipper.findByCountry", query = "SELECT s FROM Shipper s WHERE s.country = :country")
-    , @NamedQuery(name = "Shipper.findByPhone", query = "SELECT s FROM Shipper s WHERE s.phone = :phone")
-    , @NamedQuery(name = "Shipper.findByEmail", query = "SELECT s FROM Shipper s WHERE s.email = :email")
-    , @NamedQuery(name = "Shipper.findByWebsite", query = "SELECT s FROM Shipper s WHERE s.website = :website")})
+    , @NamedQuery(name = "Shipper.findByShipperCompanyName", query = "SELECT s FROM Shipper s WHERE s.shipperCompanyName = :shipperCompanyName")
+    , @NamedQuery(name = "Shipper.findByShipperContactFirstName", query = "SELECT s FROM Shipper s WHERE s.shipperContactFirstName = :shipperContactFirstName")
+    , @NamedQuery(name = "Shipper.findByShipperContactLastName", query = "SELECT s FROM Shipper s WHERE s.shipperContactLastName = :shipperContactLastName")
+    , @NamedQuery(name = "Shipper.findByShipperContactTitle", query = "SELECT s FROM Shipper s WHERE s.shipperContactTitle = :shipperContactTitle")
+    , @NamedQuery(name = "Shipper.findByShipperAddressLine1", query = "SELECT s FROM Shipper s WHERE s.shipperAddressLine1 = :shipperAddressLine1")
+    , @NamedQuery(name = "Shipper.findByShipperAddressLine2", query = "SELECT s FROM Shipper s WHERE s.shipperAddressLine2 = :shipperAddressLine2")
+    , @NamedQuery(name = "Shipper.findByShipperCity", query = "SELECT s FROM Shipper s WHERE s.shipperCity = :shipperCity")
+    , @NamedQuery(name = "Shipper.findByShipperState", query = "SELECT s FROM Shipper s WHERE s.shipperState = :shipperState")
+    , @NamedQuery(name = "Shipper.findByShipperPostCode", query = "SELECT s FROM Shipper s WHERE s.shipperPostCode = :shipperPostCode")
+    , @NamedQuery(name = "Shipper.findByShipperCountry", query = "SELECT s FROM Shipper s WHERE s.shipperCountry = :shipperCountry")
+    , @NamedQuery(name = "Shipper.findByShipperPhone", query = "SELECT s FROM Shipper s WHERE s.shipperPhone = :shipperPhone")
+    , @NamedQuery(name = "Shipper.findByShipperEmail", query = "SELECT s FROM Shipper s WHERE s.shipperEmail = :shipperEmail")
+    , @NamedQuery(name = "Shipper.findByShipperWebsite", query = "SELECT s FROM Shipper s WHERE s.shipperWebsite = :shipperWebsite")})
 public class Shipper implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -56,70 +56,68 @@ public class Shipper implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "CompanyName")
-    private String companyName;
+    @Column(name = "ShipperCompanyName")
+    private String shipperCompanyName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "ContactFirstName")
-    private String contactFirstName;
+    @Column(name = "ShipperContactFirstName")
+    private String shipperContactFirstName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "ContactLastName")
-    private String contactLastName;
+    @Column(name = "ShipperContactLastName")
+    private String shipperContactLastName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
-    @Column(name = "ContactTitle")
-    private String contactTitle;
+    @Column(name = "ShipperContactTitle")
+    private String shipperContactTitle;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 60)
-    @Column(name = "AddressLine1")
-    private String addressLine1;
+    @Column(name = "ShipperAddressLine1")
+    private String shipperAddressLine1;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "AddressLine2")
-    private String addressLine2;
+    @Column(name = "ShipperAddressLine2")
+    private String shipperAddressLine2;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "City")
-    private String city;
+    @Column(name = "ShipperCity")
+    private String shipperCity;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(name = "State")
-    private String state;
+    @Column(name = "ShipperState")
+    private String shipperState;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
-    @Column(name = "PostCode")
-    private String postCode;
+    @Column(name = "ShipperPostCode")
+    private String shipperPostCode;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "Country")
-    private String country;
-    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
+    @Column(name = "ShipperCountry")
+    private String shipperCountry;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(name = "Phone")
-    private String phone;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Column(name = "ShipperPhone")
+    private String shipperPhone;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 75)
-    @Column(name = "Email")
-    private String email;
+    @Column(name = "ShipperEmail")
+    private String shipperEmail;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name = "Website")
-    private String website;
+    @Column(name = "ShipperWebsite")
+    private String shipperWebsite;
     @OneToMany(mappedBy = "shipperID")
     private Collection<CustomerOrder> customerOrderCollection;
 
@@ -130,21 +128,21 @@ public class Shipper implements Serializable {
         this.shipperID = shipperID;
     }
 
-    public Shipper(Integer shipperID, String companyName, String contactFirstName, String contactLastName, String contactTitle, String addressLine1, String addressLine2, String city, String state, String postCode, String country, String phone, String email, String website) {
+    public Shipper(Integer shipperID, String shipperCompanyName, String shipperContactFirstName, String shipperContactLastName, String shipperContactTitle, String shipperAddressLine1, String shipperAddressLine2, String shipperCity, String shipperState, String shipperPostCode, String shipperCountry, String shipperPhone, String shipperEmail, String shipperWebsite) {
         this.shipperID = shipperID;
-        this.companyName = companyName;
-        this.contactFirstName = contactFirstName;
-        this.contactLastName = contactLastName;
-        this.contactTitle = contactTitle;
-        this.addressLine1 = addressLine1;
-        this.addressLine2 = addressLine2;
-        this.city = city;
-        this.state = state;
-        this.postCode = postCode;
-        this.country = country;
-        this.phone = phone;
-        this.email = email;
-        this.website = website;
+        this.shipperCompanyName = shipperCompanyName;
+        this.shipperContactFirstName = shipperContactFirstName;
+        this.shipperContactLastName = shipperContactLastName;
+        this.shipperContactTitle = shipperContactTitle;
+        this.shipperAddressLine1 = shipperAddressLine1;
+        this.shipperAddressLine2 = shipperAddressLine2;
+        this.shipperCity = shipperCity;
+        this.shipperState = shipperState;
+        this.shipperPostCode = shipperPostCode;
+        this.shipperCountry = shipperCountry;
+        this.shipperPhone = shipperPhone;
+        this.shipperEmail = shipperEmail;
+        this.shipperWebsite = shipperWebsite;
     }
 
     public Integer getShipperID() {
@@ -155,108 +153,108 @@ public class Shipper implements Serializable {
         this.shipperID = shipperID;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getShipperCompanyName() {
+        return shipperCompanyName;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setShipperCompanyName(String shipperCompanyName) {
+        this.shipperCompanyName = shipperCompanyName;
     }
 
-    public String getContactFirstName() {
-        return contactFirstName;
+    public String getShipperContactFirstName() {
+        return shipperContactFirstName;
     }
 
-    public void setContactFirstName(String contactFirstName) {
-        this.contactFirstName = contactFirstName;
+    public void setShipperContactFirstName(String shipperContactFirstName) {
+        this.shipperContactFirstName = shipperContactFirstName;
     }
 
-    public String getContactLastName() {
-        return contactLastName;
+    public String getShipperContactLastName() {
+        return shipperContactLastName;
     }
 
-    public void setContactLastName(String contactLastName) {
-        this.contactLastName = contactLastName;
+    public void setShipperContactLastName(String shipperContactLastName) {
+        this.shipperContactLastName = shipperContactLastName;
     }
 
-    public String getContactTitle() {
-        return contactTitle;
+    public String getShipperContactTitle() {
+        return shipperContactTitle;
     }
 
-    public void setContactTitle(String contactTitle) {
-        this.contactTitle = contactTitle;
+    public void setShipperContactTitle(String shipperContactTitle) {
+        this.shipperContactTitle = shipperContactTitle;
     }
 
-    public String getAddressLine1() {
-        return addressLine1;
+    public String getShipperAddressLine1() {
+        return shipperAddressLine1;
     }
 
-    public void setAddressLine1(String addressLine1) {
-        this.addressLine1 = addressLine1;
+    public void setShipperAddressLine1(String shipperAddressLine1) {
+        this.shipperAddressLine1 = shipperAddressLine1;
     }
 
-    public String getAddressLine2() {
-        return addressLine2;
+    public String getShipperAddressLine2() {
+        return shipperAddressLine2;
     }
 
-    public void setAddressLine2(String addressLine2) {
-        this.addressLine2 = addressLine2;
+    public void setShipperAddressLine2(String shipperAddressLine2) {
+        this.shipperAddressLine2 = shipperAddressLine2;
     }
 
-    public String getCity() {
-        return city;
+    public String getShipperCity() {
+        return shipperCity;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setShipperCity(String shipperCity) {
+        this.shipperCity = shipperCity;
     }
 
-    public String getState() {
-        return state;
+    public String getShipperState() {
+        return shipperState;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setShipperState(String shipperState) {
+        this.shipperState = shipperState;
     }
 
-    public String getPostCode() {
-        return postCode;
+    public String getShipperPostCode() {
+        return shipperPostCode;
     }
 
-    public void setPostCode(String postCode) {
-        this.postCode = postCode;
+    public void setShipperPostCode(String shipperPostCode) {
+        this.shipperPostCode = shipperPostCode;
     }
 
-    public String getCountry() {
-        return country;
+    public String getShipperCountry() {
+        return shipperCountry;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setShipperCountry(String shipperCountry) {
+        this.shipperCountry = shipperCountry;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getShipperPhone() {
+        return shipperPhone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setShipperPhone(String shipperPhone) {
+        this.shipperPhone = shipperPhone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getShipperEmail() {
+        return shipperEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setShipperEmail(String shipperEmail) {
+        this.shipperEmail = shipperEmail;
     }
 
-    public String getWebsite() {
-        return website;
+    public String getShipperWebsite() {
+        return shipperWebsite;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
+    public void setShipperWebsite(String shipperWebsite) {
+        this.shipperWebsite = shipperWebsite;
     }
 
     @XmlTransient

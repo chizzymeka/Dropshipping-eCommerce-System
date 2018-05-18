@@ -24,7 +24,7 @@
             <c:url var="url" value="viewCart">
                 <c:param name="clear" value="true"/>
             </c:url>
-            <a href="$(url)" class="bubble hMargin">clear cart</a>
+            <a href="${url}" class="bubble hMargin">Clear Cart</a>
         </c:if>
 
         <%-- continue shopping widget --%>
@@ -41,11 +41,11 @@
             </c:choose>
         </c:set>
 
-        <a href="${value}" class="bubble hMargin">continue shopping</a>
+        <a href="${value}" class="bubble hMargin">Continue Shopping</a>
 
         <%-- checkout widget --%>
         <c:if test="${!empty cart && cart.numberOfItems != 0}">
-            <a href="checkout" class="bubble hMargin">proceed to checkout &#x279f;</a>
+            <a href="checkout" class="bubble hMargin">Checkout &#x279f;</a>
         </c:if>
     </div>
 
@@ -56,10 +56,10 @@
         <table id="cartTable">
 
             <tr class="header">
-                <th>product</th>
-                <th>name</th>
-                <th>price</th>
-                <th>quantity</th>
+                <th>Product</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
             </tr>
 
             <c:forEach var="cartItem" items="${cart.items}" varStatus="iter">
@@ -77,7 +77,7 @@
                     <td>
                         &pound; ${cartItem.total}
                         <br>
-                        <span class="smallText">( &pound; ${product.msrp} / unit )</span>
+                        <span class="smallText">( &pound; ${product.productPrice} / unit )</span>
                     </td>
 
                     <td>

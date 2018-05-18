@@ -9,6 +9,7 @@ import cart.ShoppingCart;
 import entity.Category;
 import entity.Product;
 import java.io.IOException;
+import static java.lang.System.out;
 import java.util.Collection;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -57,7 +58,7 @@ public class ControllerServlet extends HttpServlet {
         // initialize servlet with configuration information
         surcharge = servletConfig.getServletContext().getInitParameter("deliverySurcharge");
 
-        // store category list in servlet context
+        // store category list in servlet context for use in retrieving cateogories for presentation on the front-end
         getServletContext().setAttribute("categories", categoryFacade.findAll());
     }
 
@@ -102,7 +103,6 @@ public class ControllerServlet extends HttpServlet {
             case "/viewCart":
                 String clear = request.getParameter("clear");
                 if ((clear != null) && clear.equals("true")) {
-
                     ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
                     cart.clear();
                 }
@@ -151,7 +151,6 @@ public class ControllerServlet extends HttpServlet {
                 // if updateCart action is called
                 // create cart object and attach it to user session
                 if (cart == null) {
-
                     cart = new ShoppingCart();
                     session.setAttribute("cart", cart);
                 }       // get user input from request
@@ -180,33 +179,34 @@ public class ControllerServlet extends HttpServlet {
                     String title = request.getParameter("title");
                     String firstName = request.getParameter("firstName");
                     String lastName = request.getParameter("lastName");
+                    String phone = request.getParameter("phone");
+                    String email = request.getParameter("email");
                     String addressLine1 = request.getParameter("addressLine1");
                     String addressLine2 = request.getParameter("addressLine2");
                     String city = request.getParameter("city");
                     String state = request.getParameter("state");
                     String postCode = request.getParameter("postCode");
                     String country = request.getParameter("country");
-                    String phone = request.getParameter("phone");
-                    String email = request.getParameter("email");
                     String creditCard = request.getParameter("creditCard");
-
-//                    Test Outputs
-//                    out.print(title);
-//                    out.print(firstName);
-//                    out.print(lastName);
-//                    out.print(addressLine1);
-//                    out.print(addressLine2);
-//                    out.print(city);
-//                    out.print(state);
-//                    out.print(postCode);
-//                    out.print(country);
-//                    out.print(phone);
-//                    out.print(email);
-//                    out.print(creditCard);
+                    
+                    
+                    // Test Outputs
+                    out.print(title);
+                    out.print(firstName);
+                    out.print(lastName);
+                    out.print(phone);
+                    out.print(email);
+                    out.print(addressLine1);
+                    out.print(addressLine2);
+                    out.print(city);
+                    out.print(state);
+                    out.print(postCode);
+                    out.print(country);
+                    out.print(creditCard);
 
                     // Validate User Data
                     boolean validationErrorFlag = false;
-                    validationErrorFlag = validator.validateForm(title, firstName, lastName, addressLine1, addressLine2, city, state, postCode, country, phone, email, creditCard, request);
+                    validationErrorFlag = validator.validateForm(title, firstName, lastName, phone, email, addressLine1, addressLine2, city, state, postCode, country, creditCard, request);
 
                     // if validation error found, return user to checkout
                     if (validationErrorFlag == true) {
@@ -214,13 +214,11 @@ public class ControllerServlet extends HttpServlet {
                         userPath = "/checkout";
                         // otherwise, save order to database
                     } else {
-
-                        int orderId = orderManager.placeOrder(title, firstName, lastName, addressLine1, addressLine2, city, state, postCode, country, phone, email, creditCard, cart);
-
+                        int orderId = orderManager.placeOrder(title, firstName, lastName, phone, email, addressLine1, addressLine2, city, state, postCode, country, creditCard, cart);
+                        
                         if (orderId != 0) {
                             // get order details
                             Map orderMap = orderManager.getOrderDetails(orderId);
-
                             // place order details in request scope
                             request.setAttribute("customer", orderMap.get("customer"));
                             request.setAttribute("products", orderMap.get("products"));

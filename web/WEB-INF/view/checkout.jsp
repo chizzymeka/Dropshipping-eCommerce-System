@@ -6,7 +6,7 @@
 
 <script src="js/jquery.validate.js" type="text/javascript"></script>
 
-// Client-side Validation
+<%--Client-side Validation--%>
 <script type="text/javascript">
     $(document).ready(function () {
         $("#checkoutForm").validate({
@@ -41,7 +41,7 @@
                 country: {
                     required: true
                 },
-                creditcard: {
+                creditCard: {
                     required: true,
                     creditcard: true
                 }
@@ -93,7 +93,7 @@
                                 <br><span class="indent"><strong>State</strong> (e.g., United Kingdom)</span>
                             </c:if>
                             <c:if test="${!empty postCodeError}">
-                                <br><span class="indent"><strong>Post Code</strong> (e.g., SO15 2FT)</span>
+                                <br><span class="indent"><strong>Post Code</strong> (e.g., SW1 6DB)</span>
                             </c:if>
                             <c:if test="${!empty creditCardError}">
                                 <br><span class="indent"><strong>Credit Card</strong> (e.g., 1111222233334444)</span>

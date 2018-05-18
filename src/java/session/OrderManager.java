@@ -52,7 +52,7 @@ public class OrderManager {
     private OrderedProductFacade orderedProductFacade;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public int placeOrder(String title, String firstName, String lastName, String addressLine1, String addressLine2, String city, String state, String postCode, String country, String phone, String email, String creditCard, ShoppingCart cart) {
+    public int placeOrder(String title, String firstName, String lastName, String phone, String email, String addressLine1, String addressLine2, String city, String state, String postCode, String country, String creditCard, ShoppingCart cart) {
         out.print(title);
         out.print(firstName);
         out.print(lastName);
@@ -67,7 +67,7 @@ public class OrderManager {
         out.print(creditCard);
         
         try {
-            Customer customer = addCustomer(title, firstName, lastName, addressLine1, addressLine2, city, state, postCode, country, phone, email, creditCard);
+            Customer customer = addCustomer(title, firstName, lastName,  phone, email, addressLine1, addressLine2, city, state, postCode, country, creditCard);
             CustomerOrder order = addOrder(customer, cart);
             addOrderedItems(order, cart);
             return order.getCustomerOrderID();
@@ -79,33 +79,33 @@ public class OrderManager {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    private Customer addCustomer(String title, String firstName, String lastName, String addressLine1, String addressLine2, String city, String state, String postCode, String country, String phone, String email, String creditCard) {
+    private Customer addCustomer(String title, String firstName, String lastName, String phone, String email, String addressLine1, String addressLine2, String city, String state, String postCode, String country, String creditCard) {
         out.print(title);
         out.print(firstName);
         out.print(lastName);
+        out.print(phone);
+        out.print(email);
         out.print(addressLine1);
         out.print(addressLine2);
         out.print(city);
         out.print(state);
         out.print(postCode);
         out.print(country);
-        out.print(phone);
-        out.print(email);
         out.print(creditCard);
 
         Customer customer = new Customer();
-        customer.setTitle(title);
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
-        customer.setAddressLine1(addressLine1);
-        customer.setAddressLine2(addressLine2);
-        customer.setCity(city);
-        customer.setState(state);
-        customer.setPostCode(postCode);
-        customer.setCountry(country);
-        customer.setPhone(phone);
-        customer.setEmail(email);
-        customer.setCreditCard(creditCard);
+        customer.setCustomerTitle(title);
+        customer.setCustomerFirstName(firstName);
+        customer.setCustomerLastName(lastName);
+        customer.setCustomerPhone(phone);
+        customer.setCustomerEmail(email);
+        customer.setCustomerAddressLine1(addressLine1);
+        customer.setCustomerAddressLine2(addressLine2);
+        customer.setCustomerCity(city);
+        customer.setCustomerState(state);
+        customer.setCustomerPostCode(postCode);
+        customer.setCustomerCountry(country);
+        customer.setCustomerCreditCard(creditCard);
 
         em.persist(customer);
         return customer;
@@ -115,16 +115,20 @@ public class OrderManager {
         // Set up customer order
         CustomerOrder order = new CustomerOrder();
         order.setCustomerID(customer);
-        order.setAmount(BigDecimal.valueOf(cart.getTotal()));
+        order.setCustomerOrderAmount(BigDecimal.valueOf(cart.getTotal()));
+        
+        // Set shipper to null when an order is created. This will be changed when a shipper is assigned to an order.
         order.setShipperID(null);
+        
+        // Get current timestamp
         Calendar calendar = Calendar.getInstance();
         Timestamp currentTimestamp = new java.sql.Timestamp(calendar.getTime().getTime());
-        order.setCreated(currentTimestamp);
+        order.setCustomerOrderCreated(currentTimestamp);
 
         // Create confirmation number
         Random random = new Random();
         int i = random.nextInt(999999999);
-        order.setConfirmationNumber(i);
+        order.setCustomerOrderConfirmationNumber(i);
         out.print(i);
         
         em.persist(order);
@@ -150,7 +154,7 @@ public class OrderManager {
             OrderedProduct orderedItem = new OrderedProduct(orderedProductPK);
 
             // set quantity
-            orderedItem.setQuantity(scItem.getQuantity());
+            orderedItem.setOrderedProductQuantity(scItem.getQuantity());
 
             em.persist(orderedItem);
         }

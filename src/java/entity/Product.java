@@ -37,9 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p")
     , @NamedQuery(name = "Product.findByProductID", query = "SELECT p FROM Product p WHERE p.productID = :productID")
     , @NamedQuery(name = "Product.findByProductName", query = "SELECT p FROM Product p WHERE p.productName = :productName")
-    , @NamedQuery(name = "Product.findByPrice", query = "SELECT p FROM Product p WHERE p.price = :price")
+    , @NamedQuery(name = "Product.findByProductPrice", query = "SELECT p FROM Product p WHERE p.productPrice = :productPrice")
     , @NamedQuery(name = "Product.findByProductDescription", query = "SELECT p FROM Product p WHERE p.productDescription = :productDescription")
-    , @NamedQuery(name = "Product.findByInventoryCount", query = "SELECT p FROM Product p WHERE p.inventoryCount = :inventoryCount")})
+    , @NamedQuery(name = "Product.findByProductInventoryCount", query = "SELECT p FROM Product p WHERE p.productInventoryCount = :productInventoryCount")})
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -56,15 +56,15 @@ public class Product implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Column(name = "Price")
-    private BigDecimal price;
+    @Column(name = "ProductPrice")
+    private BigDecimal productPrice;
     @Size(max = 1000)
     @Column(name = "ProductDescription")
     private String productDescription;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "InventoryCount")
-    private int inventoryCount;
+    @Column(name = "ProductInventoryCount")
+    private int productInventoryCount;
     @JoinColumn(name = "CategoryID", referencedColumnName = "CategoryID")
     @ManyToOne(optional = false)
     private Category categoryID;
@@ -81,11 +81,11 @@ public class Product implements Serializable {
         this.productID = productID;
     }
 
-    public Product(Integer productID, String productName, BigDecimal price, int inventoryCount) {
+    public Product(Integer productID, String productName, BigDecimal productPrice, int productInventoryCount) {
         this.productID = productID;
         this.productName = productName;
-        this.price = price;
-        this.inventoryCount = inventoryCount;
+        this.productPrice = productPrice;
+        this.productInventoryCount = productInventoryCount;
     }
 
     public Integer getProductID() {
@@ -104,12 +104,12 @@ public class Product implements Serializable {
         this.productName = productName;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getProductPrice() {
+        return productPrice;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setProductPrice(BigDecimal productPrice) {
+        this.productPrice = productPrice;
     }
 
     public String getProductDescription() {
@@ -120,12 +120,12 @@ public class Product implements Serializable {
         this.productDescription = productDescription;
     }
 
-    public int getInventoryCount() {
-        return inventoryCount;
+    public int getProductInventoryCount() {
+        return productInventoryCount;
     }
 
-    public void setInventoryCount(int inventoryCount) {
-        this.inventoryCount = inventoryCount;
+    public void setProductInventoryCount(int productInventoryCount) {
+        this.productInventoryCount = productInventoryCount;
     }
 
     public Category getCategoryID() {

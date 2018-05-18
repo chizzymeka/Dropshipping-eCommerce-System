@@ -42,7 +42,7 @@ public class ShoppingCartItem {
 
     public double getTotal() {
         double amount = 0;
-        amount = (this.getQuantity() * product.getPrice().doubleValue());
+        amount = (this.getQuantity() * product.getProductPrice().doubleValue());
         return amount;
     }
 }
