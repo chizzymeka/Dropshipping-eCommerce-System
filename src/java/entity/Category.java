@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +19,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -33,7 +36,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c")
     , @NamedQuery(name = "Category.findByCategoryID", query = "SELECT c FROM Category c WHERE c.categoryID = :categoryID")
-    , @NamedQuery(name = "Category.findByCategoryName", query = "SELECT c FROM Category c WHERE c.categoryName = :categoryName")})
+    , @NamedQuery(name = "Category.findByCategoryName", query = "SELECT c FROM Category c WHERE c.categoryName = :categoryName")
+    , @NamedQuery(name = "Category.findByCategoryCreated", query = "SELECT c FROM Category c WHERE c.categoryCreated = :categoryCreated")})
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,6 +51,11 @@ public class Category implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "CategoryName")
     private String categoryName;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CategoryCreated")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date categoryCreated;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "categoryID")
     private Collection<Product> productCollection;
 
@@ -57,9 +66,10 @@ public class Category implements Serializable {
         this.categoryID = categoryID;
     }
 
-    public Category(Integer categoryID, String categoryName) {
+    public Category(Integer categoryID, String categoryName, Date categoryCreated) {
         this.categoryID = categoryID;
         this.categoryName = categoryName;
+        this.categoryCreated = categoryCreated;
     }
 
     public Integer getCategoryID() {
@@ -76,6 +86,14 @@ public class Category implements Serializable {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public Date getCategoryCreated() {
+        return categoryCreated;
+    }
+
+    public void setCategoryCreated(Date categoryCreated) {
+        this.categoryCreated = categoryCreated;
     }
 
     @XmlTransient

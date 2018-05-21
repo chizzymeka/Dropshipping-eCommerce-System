@@ -67,9 +67,6 @@ public class CustomerOrder implements Serializable {
     @JoinColumn(name = "CustomerID", referencedColumnName = "CustomerID")
     @ManyToOne(optional = false)
     private Customer customerID;
-    @JoinColumn(name = "ShipperID", referencedColumnName = "ShipperID")
-    @ManyToOne
-    private Shipper shipperID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerOrder")
     private Collection<OrderedProduct> orderedProductCollection;
 
@@ -125,14 +122,6 @@ public class CustomerOrder implements Serializable {
 
     public void setCustomerID(Customer customerID) {
         this.customerID = customerID;
-    }
-
-    public Shipper getShipperID() {
-        return shipperID;
-    }
-
-    public void setShipperID(Shipper shipperID) {
-        this.shipperID = shipperID;
     }
 
     @XmlTransient

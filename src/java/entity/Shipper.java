@@ -6,21 +6,23 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -44,7 +46,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Shipper.findByShipperCountry", query = "SELECT s FROM Shipper s WHERE s.shipperCountry = :shipperCountry")
     , @NamedQuery(name = "Shipper.findByShipperPhone", query = "SELECT s FROM Shipper s WHERE s.shipperPhone = :shipperPhone")
     , @NamedQuery(name = "Shipper.findByShipperEmail", query = "SELECT s FROM Shipper s WHERE s.shipperEmail = :shipperEmail")
-    , @NamedQuery(name = "Shipper.findByShipperWebsite", query = "SELECT s FROM Shipper s WHERE s.shipperWebsite = :shipperWebsite")})
+    , @NamedQuery(name = "Shipper.findByShipperWebsite", query = "SELECT s FROM Shipper s WHERE s.shipperWebsite = :shipperWebsite")
+    , @NamedQuery(name = "Shipper.findByShipperActivated", query = "SELECT s FROM Shipper s WHERE s.shipperActivated = :shipperActivated")
+    , @NamedQuery(name = "Shipper.findByShipperCreated", query = "SELECT s FROM Shipper s WHERE s.shipperCreated = :shipperCreated")})
 public class Shipper implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -78,9 +82,7 @@ public class Shipper implements Serializable {
     @Size(min = 1, max = 60)
     @Column(name = "ShipperAddressLine1")
     private String shipperAddressLine1;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
     @Column(name = "ShipperAddressLine2")
     private String shipperAddressLine2;
     @Basic(optional = false)
@@ -118,8 +120,18 @@ public class Shipper implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "ShipperWebsite")
     private String shipperWebsite;
-    @OneToMany(mappedBy = "shipperID")
-    private Collection<CustomerOrder> customerOrderCollection;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ShipperActivated")
+    private boolean shipperActivated;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ShipperCreated")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date shipperCreated;
+    @JoinColumn(name = "AuthenticationID", referencedColumnName = "AuthenticationID")
+    @ManyToOne(optional = false)
+    private Authentication authenticationID;
 
     public Shipper() {
     }
@@ -128,14 +140,13 @@ public class Shipper implements Serializable {
         this.shipperID = shipperID;
     }
 
-    public Shipper(Integer shipperID, String shipperCompanyName, String shipperContactFirstName, String shipperContactLastName, String shipperContactTitle, String shipperAddressLine1, String shipperAddressLine2, String shipperCity, String shipperState, String shipperPostCode, String shipperCountry, String shipperPhone, String shipperEmail, String shipperWebsite) {
+    public Shipper(Integer shipperID, String shipperCompanyName, String shipperContactFirstName, String shipperContactLastName, String shipperContactTitle, String shipperAddressLine1, String shipperCity, String shipperState, String shipperPostCode, String shipperCountry, String shipperPhone, String shipperEmail, String shipperWebsite, boolean shipperActivated, Date shipperCreated) {
         this.shipperID = shipperID;
         this.shipperCompanyName = shipperCompanyName;
         this.shipperContactFirstName = shipperContactFirstName;
         this.shipperContactLastName = shipperContactLastName;
         this.shipperContactTitle = shipperContactTitle;
         this.shipperAddressLine1 = shipperAddressLine1;
-        this.shipperAddressLine2 = shipperAddressLine2;
         this.shipperCity = shipperCity;
         this.shipperState = shipperState;
         this.shipperPostCode = shipperPostCode;
@@ -143,6 +154,8 @@ public class Shipper implements Serializable {
         this.shipperPhone = shipperPhone;
         this.shipperEmail = shipperEmail;
         this.shipperWebsite = shipperWebsite;
+        this.shipperActivated = shipperActivated;
+        this.shipperCreated = shipperCreated;
     }
 
     public Integer getShipperID() {
@@ -257,13 +270,28 @@ public class Shipper implements Serializable {
         this.shipperWebsite = shipperWebsite;
     }
 
-    @XmlTransient
-    public Collection<CustomerOrder> getCustomerOrderCollection() {
-        return customerOrderCollection;
+    public boolean getShipperActivated() {
+        return shipperActivated;
     }
 
-    public void setCustomerOrderCollection(Collection<CustomerOrder> customerOrderCollection) {
-        this.customerOrderCollection = customerOrderCollection;
+    public void setShipperActivated(boolean shipperActivated) {
+        this.shipperActivated = shipperActivated;
+    }
+
+    public Date getShipperCreated() {
+        return shipperCreated;
+    }
+
+    public void setShipperCreated(Date shipperCreated) {
+        this.shipperCreated = shipperCreated;
+    }
+
+    public Authentication getAuthenticationID() {
+        return authenticationID;
+    }
+
+    public void setAuthenticationID(Authentication authenticationID) {
+        this.authenticationID = authenticationID;
     }
 
     @Override

@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -15,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -29,7 +32,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OrderedProduct.findAll", query = "SELECT o FROM OrderedProduct o")
     , @NamedQuery(name = "OrderedProduct.findByCustomerOrderID", query = "SELECT o FROM OrderedProduct o WHERE o.orderedProductPK.customerOrderID = :customerOrderID")
     , @NamedQuery(name = "OrderedProduct.findByProductID", query = "SELECT o FROM OrderedProduct o WHERE o.orderedProductPK.productID = :productID")
-    , @NamedQuery(name = "OrderedProduct.findByOrderedProductQuantity", query = "SELECT o FROM OrderedProduct o WHERE o.orderedProductQuantity = :orderedProductQuantity")})
+    , @NamedQuery(name = "OrderedProduct.findByOrderedProductQuantity", query = "SELECT o FROM OrderedProduct o WHERE o.orderedProductQuantity = :orderedProductQuantity")
+    , @NamedQuery(name = "OrderedProduct.findByOrderedProductCreated", query = "SELECT o FROM OrderedProduct o WHERE o.orderedProductCreated = :orderedProductCreated")})
 public class OrderedProduct implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,6 +43,11 @@ public class OrderedProduct implements Serializable {
     @NotNull
     @Column(name = "OrderedProductQuantity")
     private short orderedProductQuantity;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "OrderedProductCreated")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date orderedProductCreated;
     @JoinColumn(name = "CustomerOrderID", referencedColumnName = "CustomerOrderID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private CustomerOrder customerOrder;
@@ -53,9 +62,10 @@ public class OrderedProduct implements Serializable {
         this.orderedProductPK = orderedProductPK;
     }
 
-    public OrderedProduct(OrderedProductPK orderedProductPK, short orderedProductQuantity) {
+    public OrderedProduct(OrderedProductPK orderedProductPK, short orderedProductQuantity, Date orderedProductCreated) {
         this.orderedProductPK = orderedProductPK;
         this.orderedProductQuantity = orderedProductQuantity;
+        this.orderedProductCreated = orderedProductCreated;
     }
 
     public OrderedProduct(int customerOrderID, int productID) {
@@ -76,6 +86,14 @@ public class OrderedProduct implements Serializable {
 
     public void setOrderedProductQuantity(short orderedProductQuantity) {
         this.orderedProductQuantity = orderedProductQuantity;
+    }
+
+    public Date getOrderedProductCreated() {
+        return orderedProductCreated;
+    }
+
+    public void setOrderedProductCreated(Date orderedProductCreated) {
+        this.orderedProductCreated = orderedProductCreated;
     }
 
     public CustomerOrder getCustomerOrder() {

@@ -45,6 +45,7 @@
     <p id="categoryTitle"><p id="categoryTitle">${selectedCategory.categoryName}</p>
 
     <table id="productTable">
+        <c:set var="zero" value="${0}"/>
         <c:forEach var="product" items="${categoryProducts}" varStatus="iter">
             <tr class="${((iter.index % 2) == 0) ? 'lightblue' : 'white'}">
                 <td>
@@ -55,19 +56,29 @@
                     <br>
                     <span class="smallText">${product.productDescription}</span>
                 </td>
-
-                <td>&pound; ${product.productPrice}</td>
-
                 <td>
-                    <form action="<c:url value='addToCart'/>" method="post">
-                        <input type="hidden"
-                               name="ProductID"
-                               value="${product.productID}">
-                        <input type="submit"
-                               name="submit"
-                               value="add to cart">
-                    </form>
+                    &pound; ${product.productPrice}
                 </td>
+                <!-- if inventory count of any product is greater than zero, show add to cart button, else show 'Currently out of stock'. -->
+                <c:choose>
+                    <c:when test="${product.productInventoryCount > zero}">
+                        <td>
+                            <form action="<c:url value='addToCart'/>" method="post">
+                                <input type="hidden"
+                                       name="ProductID"
+                                       value="${product.productID}">
+                                <input type="submit"
+                                       name="submit"
+                                       value="add to cart">
+                            </form>
+                        </td>
+                    </c:when>
+                    <c:otherwise>
+                        <td>
+                            <c:out value="Currently - out of stock" default="Currently out of stock"/>
+                        </td>
+                    </c:otherwise>
+                </c:choose>
             </tr>
         </c:forEach>
     </table>

@@ -17,9 +17,12 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -29,6 +32,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -49,10 +59,14 @@ public class OrderManager {
     @EJB
     private CustomerOrderFacade customerOrderFacade;
     @EJB
+    private CustomerFacade customerFacade;
+    @EJB
     private OrderedProductFacade orderedProductFacade;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @SuppressWarnings({"unchecked", "unchecked"})
     public int placeOrder(String title, String firstName, String lastName, String phone, String email, String addressLine1, String addressLine2, String city, String state, String postCode, String country, String creditCard, ShoppingCart cart) {
+
         out.print(title);
         out.print(firstName);
         out.print(lastName);
@@ -65,12 +79,26 @@ public class OrderManager {
         out.print(phone);
         out.print(email);
         out.print(creditCard);
-        
+
         try {
-            Customer customer = addCustomer(title, firstName, lastName,  phone, email, addressLine1, addressLine2, city, state, postCode, country, creditCard);
+            Customer customer = addCustomer(title, firstName, lastName, phone, email, addressLine1, addressLine2, city, state, postCode, country);
             CustomerOrder order = addOrder(customer, cart);
             addOrderedItems(order, cart);
-            return order.getCustomerOrderID();
+
+            int customerID = order.getCustomerID().getCustomerID();
+            int orderId = order.getCustomerOrderID();
+            int confirmationNumber = order.getCustomerOrderConfirmationNumber();
+            Collection<OrderedProduct> orderedProducts = order.getOrderedProductCollection();
+            BigDecimal orderAmount = order.getCustomerOrderAmount();
+            Date orderDate = order.getCustomerOrderCreated();
+
+            // Send email notifications
+            sendAdminOrderNotificationEmail(customerID, orderId, confirmationNumber, orderedProducts, orderAmount, orderDate);
+            sendCustomerOrderNotificationEmail(customerID, orderId, confirmationNumber, orderedProducts, orderAmount, orderDate);
+            sendShipperOrderNotificationEmail(customerID, orderId, confirmationNumber, orderedProducts, orderAmount, orderDate);
+            sendSupplierOrderNotificationEmail(customerID, orderId, confirmationNumber, orderedProducts, orderAmount, orderDate);
+
+            return orderId;
         } catch (Exception e) {
             context.setRollbackOnly();
             return 0;
@@ -79,7 +107,7 @@ public class OrderManager {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    private Customer addCustomer(String title, String firstName, String lastName, String phone, String email, String addressLine1, String addressLine2, String city, String state, String postCode, String country, String creditCard) {
+    private Customer addCustomer(String title, String firstName, String lastName, String phone, String email, String addressLine1, String addressLine2, String city, String state, String postCode, String country) {
         out.print(title);
         out.print(firstName);
         out.print(lastName);
@@ -91,7 +119,6 @@ public class OrderManager {
         out.print(state);
         out.print(postCode);
         out.print(country);
-        out.print(creditCard);
 
         Customer customer = new Customer();
         customer.setCustomerTitle(title);
@@ -105,7 +132,6 @@ public class OrderManager {
         customer.setCustomerState(state);
         customer.setCustomerPostCode(postCode);
         customer.setCustomerCountry(country);
-        customer.setCustomerCreditCard(creditCard);
 
         em.persist(customer);
         return customer;
@@ -116,10 +142,7 @@ public class OrderManager {
         CustomerOrder order = new CustomerOrder();
         order.setCustomerID(customer);
         order.setCustomerOrderAmount(BigDecimal.valueOf(cart.getTotal()));
-        
-        // Set shipper to null when an order is created. This will be changed when a shipper is assigned to an order.
-        order.setShipperID(null);
-        
+
         // Get current timestamp
         Calendar calendar = Calendar.getInstance();
         Timestamp currentTimestamp = new java.sql.Timestamp(calendar.getTime().getTime());
@@ -130,8 +153,10 @@ public class OrderManager {
         int i = random.nextInt(999999999);
         order.setCustomerOrderConfirmationNumber(i);
         out.print(i);
-        
+
+        // Save order
         em.persist(order);
+
         return order;
     }
 
@@ -144,6 +169,7 @@ public class OrderManager {
         // Iterate through the shopping cart and create OrderedProducts
         for (ShoppingCartItem scItem : items) {
             int productId = scItem.getProduct().getProductID();
+            int productInventoryCount = scItem.getProduct().getProductInventoryCount();
 
             // set up primary key object
             OrderedProductPK orderedProductPK = new OrderedProductPK();
@@ -156,10 +182,26 @@ public class OrderManager {
             // set quantity
             orderedItem.setOrderedProductQuantity(scItem.getQuantity());
 
-            em.persist(orderedItem);
+            int orderedQuantity = orderedItem.getOrderedProductQuantity();
+
+            if (productInventoryCount >= orderedQuantity) {
+                // save ordered item
+                em.persist(orderedItem);
+
+                // deduct ordered quantity from inventory count
+                int newproductInventoryCount = productInventoryCount - orderedQuantity;
+                Product product = productFacade.find(productId);
+
+                // set the inveorty count as the updated value
+                product.setProductInventoryCount(newproductInventoryCount);
+
+            } else if (productInventoryCount < orderedQuantity) {
+                System.out.println("The Ordered Quantity for Product: " + productFacade.find(productId).getProductName() + "is higher than what we currently hold in stock.");
+            }
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Map getOrderDetails(int orderId) {
 
         Map orderMap = new HashMap();
@@ -188,5 +230,95 @@ public class OrderManager {
         orderMap.put("products", products);
 
         return orderMap;
+    }
+
+    public int sendCustomerOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
+        // SMTP Setting
+        String smtpServer = "smtp.gmail.com";
+        
+        //Email Addresses
+        String from = "chizzymeka@gmail.com";
+        String customerEmail = customerFacade.find(customerID).getCustomerEmail().trim();
+        String to = customerEmail;
+        String bcc = "chizzymeka@yahoo.co.uk";
+        
+        //Message
+        String subject = "Order Confirmation: " + orderId + "|" + "Confirmation Number: " + confirmationNumber;
+        String message = "Thanks for your order. We’ll let you know once your item(s) have dispatched.";
+        String productNameAndQuantitySubheader = "<tr><td>Product</td><td>Quantity</td></tr>";
+        String productNameAndQuantity = null;
+        
+        for (OrderedProduct op : orderedProducts) {
+            String productName = op.getProduct().getProductName();
+            int productQuantity = op.getOrderedProductQuantity();
+            productNameAndQuantity += "<tr><td>" + productName + "</td><td>" + productQuantity + "</td></tr>";
+        }
+
+        String messageBody
+                = "<table>"
+                + "<tr><td colspan=2>" + message + "</td></tr>"
+                + "<tr><td colspan=2>Order Details</td></tr>"
+                + "<tr><td>Order Number:</td><td>" + orderId + "</td></tr>"
+                + "<tr><td>Confirmation Number:</td><td>" + confirmationNumber + "</td></tr>"
+                + "<tr><td>Order Amount:</td><td>" + orderAmount + "</td></tr>"
+                + "<tr><td>Order Date:</td><td>" + orderDate + "</td></tr>"
+                + productNameAndQuantitySubheader
+                + productNameAndQuantity
+                + "</table>";
+
+        try {
+            Properties properties = System.getProperties();
+            properties.put("mail.transport.protocol", "smtp");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.host", smtpServer);
+            properties.put("mail.smtp.auth", "true");
+            Authenticator authenticator = new SMTPAuthenticator();
+            Session session = Session.getInstance(properties, authenticator);
+
+            // Create a new messageBody
+            Message mimeMessage = new MimeMessage(session);
+
+            // Set the FROM and TO fields
+            mimeMessage.setFrom(new InternetAddress(from));
+            mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            mimeMessage.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc, false)); // Change this to be hard-coded Peripherals email
+            mimeMessage.setSubject(subject);
+            mimeMessage.setContent(messageBody, "text/html; charset=utf-8");
+
+            // Set some other header information
+            mimeMessage.setHeader("Order Confirmation", "Peripherals");
+            mimeMessage.setSentDate(new Date());
+
+            // Send the messageBody
+            Transport.send(mimeMessage);
+            System.out.println("Message sent successfully!");
+            return 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Exception " + ex);
+            return -1;
+        }
+    }
+
+    public void sendSupplierOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
+        out.print("sendSupplierOrderNotificationEmail called!");
+    }
+
+    public void sendShipperOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
+        out.print("sendShipperOrderNotificationEmail called!");
+    }
+
+    public void sendAdminOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
+        out.print("sendAdminOrderNotificationEmail called!");
+    }
+
+    private class SMTPAuthenticator extends javax.mail.Authenticator {
+
+        @Override
+        public PasswordAuthentication getPasswordAuthentication() {
+            String username = "chizzymeka@gmail.com"; // specify your email id here (sender's email id)
+            String password = "kalakuta5114"; // specify your password here
+            return new PasswordAuthentication(username, password);
+        }
     }
 }

@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +19,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -44,7 +47,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Customer.findByCustomerCountry", query = "SELECT c FROM Customer c WHERE c.customerCountry = :customerCountry")
     , @NamedQuery(name = "Customer.findByCustomerPhone", query = "SELECT c FROM Customer c WHERE c.customerPhone = :customerPhone")
     , @NamedQuery(name = "Customer.findByCustomerEmail", query = "SELECT c FROM Customer c WHERE c.customerEmail = :customerEmail")
-    , @NamedQuery(name = "Customer.findByCustomerCreditCard", query = "SELECT c FROM Customer c WHERE c.customerCreditCard = :customerCreditCard")})
+    , @NamedQuery(name = "Customer.findByCustomerCreated", query = "SELECT c FROM Customer c WHERE c.customerCreated = :customerCreated")})
 public class Customer implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -73,9 +76,7 @@ public class Customer implements Serializable {
     @Size(min = 1, max = 60)
     @Column(name = "CustomerAddressLine1")
     private String customerAddressLine1;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
     @Column(name = "CustomerAddressLine2")
     private String customerAddressLine2;
     @Basic(optional = false)
@@ -110,9 +111,9 @@ public class Customer implements Serializable {
     private String customerEmail;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 19)
-    @Column(name = "CustomerCreditCard")
-    private String customerCreditCard;
+    @Column(name = "CustomerCreated")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date customerCreated;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerID")
     private Collection<CustomerOrder> customerOrderCollection;
 
@@ -123,20 +124,19 @@ public class Customer implements Serializable {
         this.customerID = customerID;
     }
 
-    public Customer(Integer customerID, String customerTitle, String customerFirstName, String customerLastName, String customerAddressLine1, String customerAddressLine2, String customerCity, String customerState, String customerPostCode, String customerCountry, String customerPhone, String customerEmail, String customerCreditCard) {
+    public Customer(Integer customerID, String customerTitle, String customerFirstName, String customerLastName, String customerAddressLine1, String customerCity, String customerState, String customerPostCode, String customerCountry, String customerPhone, String customerEmail, Date customerCreated) {
         this.customerID = customerID;
         this.customerTitle = customerTitle;
         this.customerFirstName = customerFirstName;
         this.customerLastName = customerLastName;
         this.customerAddressLine1 = customerAddressLine1;
-        this.customerAddressLine2 = customerAddressLine2;
         this.customerCity = customerCity;
         this.customerState = customerState;
         this.customerPostCode = customerPostCode;
         this.customerCountry = customerCountry;
         this.customerPhone = customerPhone;
         this.customerEmail = customerEmail;
-        this.customerCreditCard = customerCreditCard;
+        this.customerCreated = customerCreated;
     }
 
     public Integer getCustomerID() {
@@ -235,12 +235,12 @@ public class Customer implements Serializable {
         this.customerEmail = customerEmail;
     }
 
-    public String getCustomerCreditCard() {
-        return customerCreditCard;
+    public Date getCustomerCreated() {
+        return customerCreated;
     }
 
-    public void setCustomerCreditCard(String customerCreditCard) {
-        this.customerCreditCard = customerCreditCard;
+    public void setCustomerCreated(Date customerCreated) {
+        this.customerCreated = customerCreated;
     }
 
     @XmlTransient

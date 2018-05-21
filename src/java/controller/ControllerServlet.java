@@ -49,7 +49,7 @@ public class ControllerServlet extends HttpServlet {
     private ProductFacade productFacade;
     @EJB
     private OrderManager orderManager;
-
+    
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
 
@@ -78,22 +78,22 @@ public class ControllerServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Category selectedCategory;
         Collection<Product> categoryProducts;
+        
         // if category page is requested
         switch (userPath) {
             case "/category":
                 // get categoryId from request
                 String categoryId = request.getQueryString();
                 if (categoryId != null) {
-
                     // get selected category
                     selectedCategory = categoryFacade.find(Integer.parseInt(categoryId));
-
+                    
                     // place selected category in session scope
                     session.setAttribute("selectedCategory", selectedCategory);
 
                     // get all products for selected category
                     categoryProducts = selectedCategory.getProductCollection();
-
+                    
                     // place category products in session scope
                     session.setAttribute("categoryProducts", categoryProducts);
                 }

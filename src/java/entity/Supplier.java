@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,10 +15,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -45,7 +50,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Supplier.findBySupplierCountry", query = "SELECT s FROM Supplier s WHERE s.supplierCountry = :supplierCountry")
     , @NamedQuery(name = "Supplier.findBySupplierPhone", query = "SELECT s FROM Supplier s WHERE s.supplierPhone = :supplierPhone")
     , @NamedQuery(name = "Supplier.findBySupplierEmail", query = "SELECT s FROM Supplier s WHERE s.supplierEmail = :supplierEmail")
-    , @NamedQuery(name = "Supplier.findBySupplierWebsite", query = "SELECT s FROM Supplier s WHERE s.supplierWebsite = :supplierWebsite")})
+    , @NamedQuery(name = "Supplier.findBySupplierWebsite", query = "SELECT s FROM Supplier s WHERE s.supplierWebsite = :supplierWebsite")
+    , @NamedQuery(name = "Supplier.findBySupplierActivated", query = "SELECT s FROM Supplier s WHERE s.supplierActivated = :supplierActivated")
+    , @NamedQuery(name = "Supplier.findBySupplierCreated", query = "SELECT s FROM Supplier s WHERE s.supplierCreated = :supplierCreated")})
 public class Supplier implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -79,9 +86,7 @@ public class Supplier implements Serializable {
     @Size(min = 1, max = 60)
     @Column(name = "SupplierAddressLine1")
     private String supplierAddressLine1;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
     @Column(name = "SupplierAddressLine2")
     private String supplierAddressLine2;
     @Basic(optional = false)
@@ -119,8 +124,20 @@ public class Supplier implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "SupplierWebsite")
     private String supplierWebsite;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "SupplierActivated")
+    private boolean supplierActivated;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "SupplierCreated")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date supplierCreated;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "supplierID")
     private Collection<Product> productCollection;
+    @JoinColumn(name = "AuthenticationID", referencedColumnName = "AuthenticationID")
+    @ManyToOne(optional = false)
+    private Authentication authenticationID;
 
     public Supplier() {
     }
@@ -129,14 +146,13 @@ public class Supplier implements Serializable {
         this.supplierID = supplierID;
     }
 
-    public Supplier(Integer supplierID, String supplierCompanyName, String supplierContactFirstName, String supplierContactLastName, String supplierContactTitle, String supplierAddressLine1, String supplierAddressLine2, String supplierCity, String supplierState, String supplierPostCode, String supplierCountry, String supplierPhone, String supplierEmail, String supplierWebsite) {
+    public Supplier(Integer supplierID, String supplierCompanyName, String supplierContactFirstName, String supplierContactLastName, String supplierContactTitle, String supplierAddressLine1, String supplierCity, String supplierState, String supplierPostCode, String supplierCountry, String supplierPhone, String supplierEmail, String supplierWebsite, boolean supplierActivated, Date supplierCreated) {
         this.supplierID = supplierID;
         this.supplierCompanyName = supplierCompanyName;
         this.supplierContactFirstName = supplierContactFirstName;
         this.supplierContactLastName = supplierContactLastName;
         this.supplierContactTitle = supplierContactTitle;
         this.supplierAddressLine1 = supplierAddressLine1;
-        this.supplierAddressLine2 = supplierAddressLine2;
         this.supplierCity = supplierCity;
         this.supplierState = supplierState;
         this.supplierPostCode = supplierPostCode;
@@ -144,6 +160,8 @@ public class Supplier implements Serializable {
         this.supplierPhone = supplierPhone;
         this.supplierEmail = supplierEmail;
         this.supplierWebsite = supplierWebsite;
+        this.supplierActivated = supplierActivated;
+        this.supplierCreated = supplierCreated;
     }
 
     public Integer getSupplierID() {
@@ -258,6 +276,22 @@ public class Supplier implements Serializable {
         this.supplierWebsite = supplierWebsite;
     }
 
+    public boolean getSupplierActivated() {
+        return supplierActivated;
+    }
+
+    public void setSupplierActivated(boolean supplierActivated) {
+        this.supplierActivated = supplierActivated;
+    }
+
+    public Date getSupplierCreated() {
+        return supplierCreated;
+    }
+
+    public void setSupplierCreated(Date supplierCreated) {
+        this.supplierCreated = supplierCreated;
+    }
+
     @XmlTransient
     public Collection<Product> getProductCollection() {
         return productCollection;
@@ -265,6 +299,14 @@ public class Supplier implements Serializable {
 
     public void setProductCollection(Collection<Product> productCollection) {
         this.productCollection = productCollection;
+    }
+
+    public Authentication getAuthenticationID() {
+        return authenticationID;
+    }
+
+    public void setAuthenticationID(Authentication authenticationID) {
+        this.authenticationID = authenticationID;
     }
 
     @Override

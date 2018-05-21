@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,6 +22,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -39,7 +42,8 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Product.findByProductName", query = "SELECT p FROM Product p WHERE p.productName = :productName")
     , @NamedQuery(name = "Product.findByProductPrice", query = "SELECT p FROM Product p WHERE p.productPrice = :productPrice")
     , @NamedQuery(name = "Product.findByProductDescription", query = "SELECT p FROM Product p WHERE p.productDescription = :productDescription")
-    , @NamedQuery(name = "Product.findByProductInventoryCount", query = "SELECT p FROM Product p WHERE p.productInventoryCount = :productInventoryCount")})
+    , @NamedQuery(name = "Product.findByProductInventoryCount", query = "SELECT p FROM Product p WHERE p.productInventoryCount = :productInventoryCount")
+    , @NamedQuery(name = "Product.findByProductCreated", query = "SELECT p FROM Product p WHERE p.productCreated = :productCreated")})
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,6 +69,11 @@ public class Product implements Serializable {
     @NotNull
     @Column(name = "ProductInventoryCount")
     private int productInventoryCount;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ProductCreated")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date productCreated;
     @JoinColumn(name = "CategoryID", referencedColumnName = "CategoryID")
     @ManyToOne(optional = false)
     private Category categoryID;
@@ -81,11 +90,12 @@ public class Product implements Serializable {
         this.productID = productID;
     }
 
-    public Product(Integer productID, String productName, BigDecimal productPrice, int productInventoryCount) {
+    public Product(Integer productID, String productName, BigDecimal productPrice, int productInventoryCount, Date productCreated) {
         this.productID = productID;
         this.productName = productName;
         this.productPrice = productPrice;
         this.productInventoryCount = productInventoryCount;
+        this.productCreated = productCreated;
     }
 
     public Integer getProductID() {
@@ -126,6 +136,14 @@ public class Product implements Serializable {
 
     public void setProductInventoryCount(int productInventoryCount) {
         this.productInventoryCount = productInventoryCount;
+    }
+
+    public Date getProductCreated() {
+        return productCreated;
+    }
+
+    public void setProductCreated(Date productCreated) {
+        this.productCreated = productCreated;
     }
 
     public Category getCategoryID() {
