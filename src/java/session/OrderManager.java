@@ -12,6 +12,7 @@ import entity.CustomerOrder;
 import entity.OrderedProduct;
 import entity.OrderedProductPK;
 import entity.Product;
+import entity.Shipper;
 import static java.lang.System.out;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -62,6 +63,10 @@ public class OrderManager {
     private CustomerFacade customerFacade;
     @EJB
     private OrderedProductFacade orderedProductFacade;
+    @EJB
+    private SupplierFacade supplierFacade;
+    @EJB
+    private ShipperFacade shipperFacade;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @SuppressWarnings({"unchecked", "unchecked"})
@@ -96,7 +101,7 @@ public class OrderManager {
             sendAdminOrderNotificationEmail(customerID, orderId, confirmationNumber, orderedProducts, orderAmount, orderDate);
             sendCustomerOrderNotificationEmail(customerID, orderId, confirmationNumber, orderedProducts, orderAmount, orderDate);
             sendShipperOrderNotificationEmail(customerID, orderId, confirmationNumber, orderedProducts, orderAmount, orderDate);
-            sendSupplierOrderNotificationEmail(customerID, orderId, confirmationNumber, orderedProducts, orderAmount, orderDate);
+            sendSupplierOrderNotificationEmail(customerID, orderId, confirmationNumber, orderedProducts, orderDate);
 
             return orderId;
         } catch (Exception e) {
@@ -232,22 +237,23 @@ public class OrderManager {
         return orderMap;
     }
 
+    // Customer Order Email Notification
     public int sendCustomerOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
         // SMTP Setting
         String smtpServer = "smtp.gmail.com";
-        
+
         //Email Addresses
         String from = "chizzymeka@gmail.com";
         String customerEmail = customerFacade.find(customerID).getCustomerEmail().trim();
         String to = customerEmail;
         String bcc = "chizzymeka@yahoo.co.uk";
-        
+
         //Message
         String subject = "Order Confirmation: " + orderId + "|" + "Confirmation Number: " + confirmationNumber;
         String message = "Thanks for your order. We’ll let you know once your item(s) have dispatched.";
         String productNameAndQuantitySubheader = "<tr><td>Product</td><td>Quantity</td></tr>";
         String productNameAndQuantity = null;
-        
+
         for (OrderedProduct op : orderedProducts) {
             String productName = op.getProduct().getProductName();
             int productQuantity = op.getOrderedProductQuantity();
@@ -300,16 +306,232 @@ public class OrderManager {
         }
     }
 
-    public void sendSupplierOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
-        out.print("sendSupplierOrderNotificationEmail called!");
+    // Supplier Order Email Notification
+    public int sendSupplierOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, Date orderDate) {
+        // SMTP Setting
+        String smtpServer = "smtp.gmail.com";
+
+        //Email Addresses
+        String from = "chizzymeka@gmail.com";
+        for (OrderedProduct orderedProduct_outer : orderedProducts) {
+            int supplierId = orderedProduct_outer.getProduct().getSupplierID().getSupplierID();
+            String supplierEmail = supplierFacade.find(supplierId).getSupplierEmail().trim();
+
+            String to = supplierEmail;
+            String bcc = "chizzymeka@yahoo.co.uk";
+
+            //Message
+            String subject = "New Order for Collection: " + orderId + "|" + "Confirmation Number: " + confirmationNumber;
+            String message = "Please liaise with our shipper as soon as possible to get the products listed below shipped to the customer.";
+            String productNameAndQuantitySubheader = "<tr><td>Product</td><td>Quantity</td></tr>";
+            String productNameAndQuantity = null;
+
+            for (OrderedProduct orderedProduct_inner : orderedProducts) {
+                
+                int productSupplier = orderedProduct_inner.getProduct().getSupplierID().getSupplierID();
+                
+                // if productSupplier matches the supplier's id whom email has been retrived above, then send them the product and quantity details below
+                if(supplierId == productSupplier){
+                    String productName = orderedProduct_inner.getProduct().getProductName();
+                    int productQuantity = orderedProduct_inner.getOrderedProductQuantity();
+                    productNameAndQuantity += "<tr><td>" + productName + "</td><td>" + productQuantity + "</td></tr>";
+                }
+            }
+
+            String messageBody
+                    = "<table>"
+                    + "<tr><td colspan=2>" + message + "</td></tr>"
+                    + "<tr><td colspan=2>Order Details</td></tr>"
+                    + "<tr><td>Order Number:</td><td>" + orderId + "</td></tr>"
+                    + "<tr><td>Confirmation Number:</td><td>" + confirmationNumber + "</td></tr>"
+                    + "<tr><td>Order Date:</td><td>" + orderDate + "</td></tr>"
+                    + productNameAndQuantitySubheader
+                    + productNameAndQuantity
+                    + "</table>";
+
+            try {
+                Properties properties = System.getProperties();
+                properties.put("mail.transport.protocol", "smtp");
+                properties.put("mail.smtp.starttls.enable", "true");
+                properties.put("mail.smtp.host", smtpServer);
+                properties.put("mail.smtp.auth", "true");
+                Authenticator authenticator = new SMTPAuthenticator();
+                Session session = Session.getInstance(properties, authenticator);
+
+                // Create a new messageBody
+                Message mimeMessage = new MimeMessage(session);
+
+                // Set the FROM and TO fields
+                mimeMessage.setFrom(new InternetAddress(from));
+                mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+                mimeMessage.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc, false)); // Change this to be hard-coded Peripherals email
+                mimeMessage.setSubject(subject);
+                mimeMessage.setContent(messageBody, "text/html; charset=utf-8");
+
+                // Set some other header information
+                mimeMessage.setHeader("Order Confirmation", "Peripherals");
+                mimeMessage.setSentDate(new Date());
+
+                // Send the messageBody
+                Transport.send(mimeMessage);
+                System.out.println("Message sent successfully!");
+                return 0;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Exception " + ex);
+                return -1;
+            }
+        }
+        return 1;
     }
 
-    public void sendShipperOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
-        out.print("sendShipperOrderNotificationEmail called!");
+    // Shipper Order Email Notification
+    public int sendShipperOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
+        // SMTP Setting
+        String smtpServer = "smtp.gmail.com";
+
+        //Email Addresses
+        String from = "chizzymeka@gmail.com";
+        String shipperEmail = null;
+        
+        // Look for the activated shipper and obtain thier email aaddress
+        List<Shipper> shipperList = shipperFacade.findAll();
+        for(Shipper shipper : shipperList){
+            boolean shipperActivated = shipper.getShipperActivated();
+            
+            if(shipperActivated){
+                shipperEmail = shipper.getShipperEmail().trim();
+            }
+        }
+        
+        String to = shipperEmail;
+        String bcc = "chizzymeka@yahoo.co.uk";
+
+        //Message
+        String subject = "New Order for Collection: " + orderId + "|" + "Confirmation Number: " + confirmationNumber;
+        String message = "Please liaise with the listed suppliers below to collect the orders for the subject customers.";
+        String productDetailsAndAssociatedSupplierDetails = null;
+
+        for (OrderedProduct op : orderedProducts) {
+            String productName = op.getProduct().getProductName();
+            int productQuantity = op.getOrderedProductQuantity();
+            String supplierName = op.getProduct().getSupplierID().getSupplierCompanyName();
+            String supplierPhone = op.getProduct().getSupplierID().getSupplierPhone();
+            String supplierEmail = op.getProduct().getSupplierID().getSupplierEmail();
+            productDetailsAndAssociatedSupplierDetails += "<tr><td>" + productName + "</td><td>" + productQuantity + "</td><td>" + supplierName + "</td><td>" + supplierPhone + "</td><td>" + supplierEmail + "</td></tr>";
+        }
+
+        String messageBody
+                = "<table>"
+                + "<tr><td colspan=5>" + message + "</td></tr>"
+                + "<tr><td colspan=5>Order Number:</td><td>" + orderId + "</td></tr>"
+                + "<tr><td colspan=5>Confirmation Number:</td><td>" + confirmationNumber + "</td></tr>"
+                + "<tr><td colspan=5>Amount:</td><td>" + orderAmount + "</td></tr>"
+                + "<tr><td colspan=5>Order Date:</td><td>" + orderDate + "</td></tr>"
+                + "<tr><td>Product Name</td><td>Quantity</td><td>Suplier Name</td><td>Supplier Phone</td><td>Supplier Email</td></tr>"
+                + productDetailsAndAssociatedSupplierDetails
+                + "</table>";
+
+        try {
+            Properties properties = System.getProperties();
+            properties.put("mail.transport.protocol", "smtp");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.host", smtpServer);
+            properties.put("mail.smtp.auth", "true");
+            Authenticator authenticator = new SMTPAuthenticator();
+            Session session = Session.getInstance(properties, authenticator);
+
+            // Create a new messageBody
+            Message mimeMessage = new MimeMessage(session);
+
+            // Set the FROM and TO fields
+            mimeMessage.setFrom(new InternetAddress(from));
+            mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            mimeMessage.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc, false)); // Change this to be hard-coded Peripherals email
+            mimeMessage.setSubject(subject);
+            mimeMessage.setContent(messageBody, "text/html; charset=utf-8");
+
+            // Set some other header information
+            mimeMessage.setHeader("Order Confirmation", "Peripherals");
+            mimeMessage.setSentDate(new Date());
+
+            // Send the messageBody
+            Transport.send(mimeMessage);
+            System.out.println("Message sent successfully!");
+            return 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Exception " + ex);
+            return -1;
+        }
     }
 
-    public void sendAdminOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
-        out.print("sendAdminOrderNotificationEmail called!");
+    public int sendAdminOrderNotificationEmail(int customerID, int orderId, int confirmationNumber, Collection<OrderedProduct> orderedProducts, BigDecimal orderAmount, Date orderDate) {
+        // SMTP Setting
+        String smtpServer = "smtp.gmail.com";
+
+        //Email Addresses
+        String from = "chizzymeka@gmail.com";
+        String customerEmail = customerFacade.find(customerID).getCustomerEmail().trim();
+        String to = customerEmail;
+        String bcc = "chizzymeka@yahoo.co.uk";
+
+        //Message
+        String subject = "Order Confirmation: " + orderId + "|" + "Confirmation Number: " + confirmationNumber;
+        String message = "Thanks for your order. We’ll let you know once your item(s) have dispatched.";
+        String productNameAndQuantitySubheader = "<tr><td>Product</td><td>Quantity</td></tr>";
+        String productNameAndQuantity = null;
+
+        for (OrderedProduct op : orderedProducts) {
+            String productName = op.getProduct().getProductName();
+            int productQuantity = op.getOrderedProductQuantity();
+            productNameAndQuantity += "<tr><td>" + productName + "</td><td>" + productQuantity + "</td></tr>";
+        }
+
+        String messageBody
+                = "<table>"
+                + "<tr><td colspan=2>" + message + "</td></tr>"
+                + "<tr><td colspan=2>Order Details</td></tr>"
+                + "<tr><td>Order Number:</td><td>" + orderId + "</td></tr>"
+                + "<tr><td>Confirmation Number:</td><td>" + confirmationNumber + "</td></tr>"
+                + "<tr><td>Order Amount:</td><td>" + orderAmount + "</td></tr>"
+                + "<tr><td>Order Date:</td><td>" + orderDate + "</td></tr>"
+                + productNameAndQuantitySubheader
+                + productNameAndQuantity
+                + "</table>";
+
+        try {
+            Properties properties = System.getProperties();
+            properties.put("mail.transport.protocol", "smtp");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.host", smtpServer);
+            properties.put("mail.smtp.auth", "true");
+            Authenticator authenticator = new SMTPAuthenticator();
+            Session session = Session.getInstance(properties, authenticator);
+
+            // Create a new messageBody
+            Message mimeMessage = new MimeMessage(session);
+
+            // Set the FROM and TO fields
+            mimeMessage.setFrom(new InternetAddress(from));
+            mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            mimeMessage.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc, false)); // Change this to be hard-coded Peripherals email
+            mimeMessage.setSubject(subject);
+            mimeMessage.setContent(messageBody, "text/html; charset=utf-8");
+
+            // Set some other header information
+            mimeMessage.setHeader("Order Confirmation", "Peripherals");
+            mimeMessage.setSentDate(new Date());
+
+            // Send the messageBody
+            Transport.send(mimeMessage);
+            System.out.println("Message sent successfully!");
+            return 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Exception " + ex);
+            return -1;
+        }
     }
 
     private class SMTPAuthenticator extends javax.mail.Authenticator {

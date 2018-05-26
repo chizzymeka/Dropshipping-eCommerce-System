@@ -28,7 +28,10 @@
             <url-pattern>/about.jsp</url-pattern>
             <url-pattern>/index.jsp</url-pattern>
             <url-pattern>/login.jsp</url-pattern>
-            <url-pattern>/WEB-INF/view/*</url-pattern>
+            <url-pattern>/WEB-INF/view/cart.jsp</url-pattern>
+            <url-pattern>/WEB-INF/view/category.jsp</url-pattern>
+            <url-pattern>/WEB-INF/view/checkout.jsp</url-pattern>
+            <url-pattern>/WEB-INF/view/confirmation.jsp</url-pattern>
             <include-prelude>/WEB-INF/jspf/storefrontHeader.jspf</include-prelude>
             <include-coda>/WEB-INF/jspf/storefrontFooter.jspf</include-coda>
         </jsp-property-group>
@@ -48,16 +51,16 @@
         <jsp-property-group>
             <description>header and footer settings | JSP configuration for the Supplier's Console</description>
             <url-pattern>/supplier/supplierError.jsp</url-pattern>
-            <url-pattern>/supplier/supplierIndex.jsp</url-pattern>
             <url-pattern>/supplier/supplierLogin.jsp</url-pattern>
+            <url-pattern>/WEB-INF/view/supplierIndex.jsp</url-pattern>
             <include-prelude>/supplier/jspf/supplierConsoleHeader.jspf</include-prelude>
             <include-coda>/supplier/jspf/supplierConsoleFooter.jspf</include-coda>
         </jsp-property-group>
         <jsp-property-group>
             <description>header and footer settings | JSP configuration for the Shipper's Console</description>
             <url-pattern>/shipper/shipperError.jsp</url-pattern>
-            <url-pattern>/shipper/shipperIndex.jsp</url-pattern>
             <url-pattern>/shipper/shipperLogin.jsp</url-pattern>
+            <url-pattern>/WEB-INF/view/shipperIndex.jsp</url-pattern>
             <include-prelude>/shipper/jspf/shipperConsoleHeader.jspf</include-prelude>
             <include-coda>/shipper/jspf/shipperConsoleFooter.jspf</include-coda>
         </jsp-property-group>

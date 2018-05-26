@@ -4,12 +4,12 @@
     Author     : Chizzy Meka | 16036630 | MSc. Computing
 --%>
 
-<form action="j_security_check" method=post>
-    <div id="loginBox">
+<div id="loginBox">
+    <form id="supplierLogin" name="supplierLogin" action="supplierConsole" method="POST">
         <p><strong>Supplier Username:</strong>
-        <input type="text" size="20" name="j_username"></p>
+        <input type="text" size="20" id="supplierUsername" name="supplierUsername" value="${supplierUsername}"></p>
         <p><strong>Supplier Password:</strong>
-        <input type="password" size="20" name="j_password"></p>
+        <input type="password" size="20" id="supplierPassword" name="supplierPassword" value="${supplierPassword}"></p>
         <p><input type="submit" value="submit"></p>
-    </div>
-</form>
+    </form>
+</div>

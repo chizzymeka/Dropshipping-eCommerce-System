@@ -81,7 +81,7 @@ public class ControllerServlet extends HttpServlet {
         
         // if category page is requested
         switch (userPath) {
-            case "/category":
+            case "/category": {
                 // get categoryId from request
                 String categoryId = request.getQueryString();
                 if (categoryId != null) {
@@ -98,9 +98,20 @@ public class ControllerServlet extends HttpServlet {
                     session.setAttribute("categoryProducts", categoryProducts);
                 }
                 break;
+            }
+
+            // if checkout page is requested
+            case "/checkout": {
+                ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
+                // calculate total
+                cart.calculateTotal(surcharge);
+
+                // forward to checkout page and switch to a secure channel
+                break;
+            }
 
             // if cart page is requested
-            case "/viewCart":
+            case "/viewCart": {
                 String clear = request.getParameter("clear");
                 if ((clear != null) && clear.equals("true")) {
                     ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
@@ -108,15 +119,8 @@ public class ControllerServlet extends HttpServlet {
                 }
                 userPath = "/cart";
                 break;
+            }
 
-            // if checkout page is requested
-            case "/checkout":
-                ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
-                // calculate total
-                cart.calculateTotal(surcharge);
-
-                // forward to checkout page and switch to a secure channel
-                break;
             default:
                 break;
         }

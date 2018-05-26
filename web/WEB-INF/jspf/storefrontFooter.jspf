@@ -13,11 +13,11 @@
         &nbsp;&nbsp;|&nbsp;&nbsp;
         <a href="contact.jsp">Contact</a>
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="<c:url value='admin'/>" target="_blank">Admin</a>
+        <a href="<c:url value='admin'/>">Admin</a>
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="<c:url value='shipper/viewReadyToBeShippedOrders'/>" target="_blank">Shipper</a>
+        <a href="<c:url value='shipper/shipperLogin.jsp'/>">Shipper</a>
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="<c:url value='supplier/viewMyProducts'/>" target="_blank">Supplier</a>
+        <a href="<c:url value='supplier/supplierLogin.jsp'/>">Supplier</a>
     </p>
 </div>
 </div>

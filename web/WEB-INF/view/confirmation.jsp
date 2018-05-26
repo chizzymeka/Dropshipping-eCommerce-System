@@ -14,7 +14,7 @@
         Please keep a note of your confirmation number:
         <strong>${orderRecord.confirmationNumber}</strong>
         <br>
-        If you have a query concerning your order, feel free to <a href="contact" target="_blank">contact us</a>.
+        If you have a query concerning your order, feel free to <a href="contact">contact us</a>.
         <br><br>
     </p>
 

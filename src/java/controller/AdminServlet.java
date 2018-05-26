@@ -166,9 +166,10 @@ public class AdminServlet extends HttpServlet {
                 break;
             
             // if add new product form is requested    
-            case "/admin/addNewProductForm":
+            case "/admin/addNewProductForm": {
                 response.sendRedirect("/Peripherals/admin/addNewProduct.jsp");
                 break;
+            }
                 
             case "/admin/addNewShipper":
                 // extract user data from request
